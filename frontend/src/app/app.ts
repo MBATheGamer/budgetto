@@ -6,5 +6,5 @@ import { Component, signal } from "@angular/core";
   template: "<h1>Hello, World!</h1>",
 })
 export class App {
-  protected readonly title = signal("budgetto-frontend");
+  protected readonly title = signal("budgetto");
 }
