@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.mbathegamer.budgetto.entities.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {}
+public interface UserRepository extends JpaRepository<User, Long> {
+  boolean existsByEmail(String email);
+}
