@@ -1,20 +1,24 @@
 package com.mbathegamer.budgetto.controllers;
 
-import java.util.Map;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.mbathegamer.budgetto.dtos.LoginRequest;
 import com.mbathegamer.budgetto.dtos.RegisterRequest;
+import com.mbathegamer.budgetto.exceptions.InvalidCredentialsException;
 import com.mbathegamer.budgetto.mappers.UserMapper;
 import com.mbathegamer.budgetto.services.UserService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @AllArgsConstructor
@@ -47,4 +51,20 @@ public class AuthController {
         .created(uri)
         .body(userResponse);
   }
+
+  @PostMapping("login")
+  public ResponseEntity<?> login(
+      @Valid
+      @RequestBody
+      LoginRequest request) {
+    try {
+      service.login(request);
+    } catch (InvalidCredentialsException exception) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body(Map.of("error", exception.getMessage()));
+    }
+
+    return ResponseEntity.ok().build();
+  }
+
 }
