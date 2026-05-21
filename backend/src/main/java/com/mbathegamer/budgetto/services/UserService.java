@@ -6,7 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.mbathegamer.budgetto.dtos.RegisterUserRequest;
+import com.mbathegamer.budgetto.dtos.RegisterRequest;
 import com.mbathegamer.budgetto.entities.User;
 import com.mbathegamer.budgetto.entities.UserRole;
 import com.mbathegamer.budgetto.entities.UserStatus;
@@ -22,7 +22,7 @@ public class UserService {
   private final UserMapper mapper;
   private final PasswordEncoder encoder = new BCryptPasswordEncoder();
 
-  public Optional<User> register(RegisterUserRequest request) {
+  public Optional<User> register(RegisterRequest request) {
     if (repository.existsByEmail(request.email().toLowerCase())) {
       return Optional.empty();
     }

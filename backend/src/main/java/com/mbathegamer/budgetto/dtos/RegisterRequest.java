@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record RegisterUserRequest(
+public record RegisterRequest(
     @JsonProperty("first-name")
     @NotBlank(message = "First name is required")
     @Size(max = 64, message = "Name must be less then 64 characters")
