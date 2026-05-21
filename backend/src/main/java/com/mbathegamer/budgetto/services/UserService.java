@@ -6,10 +6,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.mbathegamer.budgetto.dtos.LoginRequest;
 import com.mbathegamer.budgetto.dtos.RegisterRequest;
+import com.mbathegamer.budgetto.dtos.UserResponse;
 import com.mbathegamer.budgetto.entities.User;
 import com.mbathegamer.budgetto.entities.UserRole;
 import com.mbathegamer.budgetto.entities.UserStatus;
+import com.mbathegamer.budgetto.exceptions.InvalidCredentialsException;
 import com.mbathegamer.budgetto.mappers.UserMapper;
 import com.mbathegamer.budgetto.repositories.UserRepository;
 
@@ -35,5 +38,15 @@ public class UserService {
     repository.save(user);
 
     return Optional.of(user);
+  }
+
+  public UserResponse login(LoginRequest request) {
+    var user = repository.findByEmail(request.email()).orElse(null);
+
+    if (user == null || !encoder.matches(request.password(), user.getPassword())) {
+      throw new InvalidCredentialsException("Invalid credentials");
+    }
+
+    return mapper.toDto(user);
   }
 }
