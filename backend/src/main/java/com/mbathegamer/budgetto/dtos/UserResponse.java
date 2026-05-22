@@ -1,9 +1,10 @@
 package com.mbathegamer.budgetto.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record UserResponse(
-    @JsonProperty("user-id")
+    @JsonIgnore
     Long id,
 
     @JsonProperty("first-name")
