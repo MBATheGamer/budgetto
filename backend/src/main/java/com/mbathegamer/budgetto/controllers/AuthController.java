@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.mbathegamer.budgetto.dtos.JwtResponse;
 import com.mbathegamer.budgetto.dtos.LoginRequest;
 import com.mbathegamer.budgetto.dtos.RegisterRequest;
 import com.mbathegamer.budgetto.mappers.UserMapper;
+import com.mbathegamer.budgetto.services.JwtService;
 import com.mbathegamer.budgetto.services.UserService;
 
 import jakarta.validation.Valid;
@@ -26,6 +28,7 @@ public class AuthController {
   private final AuthenticationManager authenticationManager;
   private final UserService service;
   private final UserMapper mapper;
+  private final JwtService jwtService;
 
   @PostMapping("/register")
   public ResponseEntity<?> regiter(
@@ -53,13 +56,20 @@ public class AuthController {
   }
 
   @PostMapping("login")
-  public ResponseEntity<?> login(
+  public ResponseEntity<JwtResponse> login(
       @Valid
       @RequestBody
       LoginRequest request) {
     authenticationManager
-        .authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
+        .authenticate(
+            new UsernamePasswordAuthenticationToken(
+                request.email(),
+                request.password()
+            )
+        );
 
-    return ResponseEntity.ok().build();
+    var token = jwtService.generateToken(request.email());
+
+    return ResponseEntity.ok(new JwtResponse(token));
   }
 }
