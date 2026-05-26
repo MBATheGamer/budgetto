@@ -2,11 +2,13 @@ package com.mbathegamer.budgetto.services;
 
 import java.util.Optional;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.mbathegamer.budgetto.dtos.RegisterUserRequest;
+import com.mbathegamer.budgetto.dtos.RegisterRequest;
 import com.mbathegamer.budgetto.entities.User;
 import com.mbathegamer.budgetto.entities.UserRole;
 import com.mbathegamer.budgetto.entities.UserStatus;
@@ -17,15 +19,16 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
   private final UserRepository repository;
   private final UserMapper mapper;
-  private final PasswordEncoder encoder = new BCryptPasswordEncoder();
 
-  public Optional<User> register(RegisterUserRequest request) {
+  public Optional<User> register(RegisterRequest request) {
     if (repository.existsByEmail(request.email().toLowerCase())) {
       return Optional.empty();
     }
+
+    var encoder = new BCryptPasswordEncoder();
 
     var user = mapper.toEntity(request);
     user.setPassword(encoder.encode(user.getPassword()));
@@ -35,5 +38,11 @@ public class UserService {
     repository.save(user);
 
     return Optional.of(user);
+  }
+
+  @Override
+  public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    return repository.findByEmail(email)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
   }
 }

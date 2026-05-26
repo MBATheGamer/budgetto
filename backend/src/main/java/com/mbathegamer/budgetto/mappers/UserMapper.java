@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
 
-import com.mbathegamer.budgetto.dtos.RegisterUserRequest;
+import com.mbathegamer.budgetto.dtos.RegisterRequest;
 import com.mbathegamer.budgetto.dtos.UserResponse;
 import com.mbathegamer.budgetto.entities.User;
 import com.mbathegamer.budgetto.entities.UserRole;
@@ -21,7 +21,7 @@ public class UserMapper {
     );
   }
 
-  public User toEntity(RegisterUserRequest request) {
+  public User toEntity(RegisterRequest request) {
     return User.builder()
         .firstName(request.firstName())
         .lastName(request.lastName())
