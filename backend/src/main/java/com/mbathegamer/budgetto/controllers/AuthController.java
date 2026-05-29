@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -55,7 +56,7 @@ public class AuthController {
         .body(userResponse);
   }
 
-  @PostMapping("login")
+  @PostMapping("/login")
   public ResponseEntity<JwtResponse> login(
       @Valid
       @RequestBody
@@ -71,5 +72,14 @@ public class AuthController {
     var token = jwtService.generateToken(request.email());
 
     return ResponseEntity.ok(new JwtResponse(token));
+  }
+
+  @PostMapping("/validate")
+  public boolean validate(
+      @RequestHeader("Authorization")
+      String authHeader) {
+    var token = authHeader.replace("Bearer ", "");
+
+    return jwtService.validateToken(token);
   }
 }
