@@ -5,6 +5,8 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -15,6 +17,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.mbathegamer.budgetto.dtos.JwtResponse;
 import com.mbathegamer.budgetto.dtos.LoginRequest;
 import com.mbathegamer.budgetto.dtos.RegisterRequest;
+import com.mbathegamer.budgetto.dtos.UserResponse;
+import com.mbathegamer.budgetto.entities.User;
 import com.mbathegamer.budgetto.mappers.UserMapper;
 import com.mbathegamer.budgetto.services.JwtService;
 import com.mbathegamer.budgetto.services.UserService;
@@ -81,5 +85,18 @@ public class AuthController {
     var token = authHeader.replace("Bearer ", "");
 
     return jwtService.validateToken(token);
+  }
+
+  @GetMapping("/me")
+  public ResponseEntity<UserResponse> me() {
+    var authentication = SecurityContextHolder.getContext().getAuthentication();
+    var email = (String) authentication.getPrincipal();
+    var user = (User) service.loadUserByUsername(email);
+
+    if (user == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok(mapper.toDto(user));
   }
 }
