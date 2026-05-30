@@ -5,6 +5,8 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.mbathegamer.budgetto.entities.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -18,9 +20,12 @@ public class JwtService {
   @Value("${spring.jwt.token-expiration}")
   private long tokenExpiration;
 
-  public String generateToken(String email) {
+  public String generateToken(User user) {
     return Jwts.builder()
-        .subject(email)
+        .subject(user.getId().toString())
+        .claim("email", user.getEmail())
+        .claim("first-name", user.getFirstName())
+        .claim("last-name", user.getLastName())
         .issuedAt(new Date())
         .expiration(new Date(System.currentTimeMillis() + 1_000 * tokenExpiration))
         .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
@@ -43,7 +48,7 @@ public class JwtService {
         .getPayload();
   }
 
-  public String getEmailFromToken(String token) {
-    return getClaims(token).getSubject();
+  public Long getUserIdFromToken(String token) {
+    return Long.parseLong(getClaims(token).getSubject());
   }
 }
