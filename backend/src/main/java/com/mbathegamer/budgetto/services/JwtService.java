@@ -2,25 +2,31 @@ package com.mbathegamer.budgetto.services;
 
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.mbathegamer.budgetto.config.JwtConfig;
 import com.mbathegamer.budgetto.entities.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class JwtService {
-  @Value("${spring.jwt.secret}")
-  private String secret;
+  private final JwtConfig jwtConfig;
 
-  @Value("${spring.jwt.token-expiration}")
-  private long tokenExpiration;
+  public String generateAccessToken(User user) {
+    return generateToken(user, jwtConfig.getAccessTokenExpiration());
+  }
 
-  public String generateToken(User user) {
+  public String generateRefreshToken(User user) {
+    return generateToken(user, jwtConfig.getRefreshTokenExpiration());
+  }
+
+  private String generateToken(User user, Long tokenExpiration) {
     return Jwts.builder()
         .subject(user.getId().toString())
         .claim("email", user.getEmail())
@@ -28,7 +34,7 @@ public class JwtService {
         .claim("last-name", user.getLastName())
         .issuedAt(new Date())
         .expiration(new Date(System.currentTimeMillis() + 1_000 * tokenExpiration))
-        .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+        .signWith(Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes()))
         .compact();
   }
 
@@ -42,7 +48,7 @@ public class JwtService {
 
   private Claims getClaims(String token) {
     return Jwts.parser()
-        .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+        .verifyWith(Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes()))
         .build()
         .parseSignedClaims(token)
         .getPayload();
