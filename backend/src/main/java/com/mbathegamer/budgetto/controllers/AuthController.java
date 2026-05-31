@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.mbathegamer.budgetto.config.JwtConfig;
 import com.mbathegamer.budgetto.dtos.JwtResponse;
 import com.mbathegamer.budgetto.dtos.LoginRequest;
 import com.mbathegamer.budgetto.dtos.RegisterRequest;
@@ -23,6 +24,8 @@ import com.mbathegamer.budgetto.mappers.UserMapper;
 import com.mbathegamer.budgetto.services.JwtService;
 import com.mbathegamer.budgetto.services.UserService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -34,6 +37,7 @@ public class AuthController {
   private final UserService service;
   private final UserMapper mapper;
   private final JwtService jwtService;
+  private final JwtConfig jwtConfig;
 
   @PostMapping("/register")
   public ResponseEntity<?> regiter(
@@ -64,7 +68,8 @@ public class AuthController {
   public ResponseEntity<JwtResponse> login(
       @Valid
       @RequestBody
-      LoginRequest request) {
+      LoginRequest request,
+      HttpServletResponse response) {
     authenticationManager
         .authenticate(
             new UsernamePasswordAuthenticationToken(
@@ -74,9 +79,17 @@ public class AuthController {
         );
 
     var user = (User) service.loadUserByUsername(request.email());
-    var token = jwtService.generateToken(user);
+    var accessToken = jwtService.generateAccessToken(user);
+    var refreshToken = jwtService.generateRefreshToken(user);
 
-    return ResponseEntity.ok(new JwtResponse(token));
+    var cookie = new Cookie("refresh-token", refreshToken);
+    cookie.setHttpOnly(true);
+    cookie.setPath("/api/v1/auth/refresh");
+    cookie.setMaxAge((int) jwtConfig.getRefreshTokenExpiration());
+    cookie.setSecure(true);
+    response.addCookie(cookie);
+
+    return ResponseEntity.ok(new JwtResponse(accessToken));
   }
 
   @PostMapping("/validate")
