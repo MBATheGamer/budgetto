@@ -2,10 +2,12 @@ package com.mbathegamer.budgetto.controllers;
 
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -92,12 +94,27 @@ public class AuthController {
     return ResponseEntity.ok(new JwtResponse(accessToken));
   }
 
+  @PostMapping("/refresh")
+  public ResponseEntity<JwtResponse> refresh(
+      @CookieValue(value = "refresh-token")
+      String refreshToken) {
+    if (!jwtService.validateToken(refreshToken)) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    var userId = jwtService.getUserIdFromToken(refreshToken);
+    var user = service.findById(userId).orElseThrow();
+    var accessToken = jwtService.generateAccessToken(user);
+
+    return ResponseEntity.ok(new JwtResponse(accessToken));
+  }
+
   @PostMapping("/validate")
   public boolean validate(
       @RequestHeader("Authorization")
       String authHeader) {
     var token = authHeader.replace("Bearer ", "");
-
+    System.out.println("Hi");
     return jwtService.validateToken(token);
   }
 
