@@ -16,7 +16,8 @@ spring:
 
   jwt:
     secret: ${JWT_SECRET}
-    token-expiration: 86400 # 1 day
+    access-token-expiration: ${ACCESS_TOKEN_EXPIRATION}
+    refresh-token-expiration: ${REFRESH_TOKEN_EXPIRATION}
 
 app:
   cors:
