@@ -7,7 +7,7 @@ import {
   Validators,
 } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { ToastService } from "../toast.service";
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
@@ -28,7 +28,6 @@ export class SignUp {
   private toast = inject(ToastService);
 
   loading = signal(false);
-  serverError = signal("");
 
   form = this.fb.group(
     {
@@ -51,7 +50,6 @@ export class SignUp {
     if (this.form.invalid) return;
 
     this.loading.set(true);
-    this.serverError.set("");
 
     const { firstName, lastName, email, password } = this.form.value;
 
@@ -67,11 +65,11 @@ export class SignUp {
           this.toast.show("Account created successfully!", "success");
           setTimeout(() => this.router.navigate(["/sign-in"]), 2000);
         },
-        error: (err) => {
+        error: (err: HttpErrorResponse) => {
           this.loading.set(false);
-          const msg = err.error?.email ?? "Registration failed. Please try again.";
-          this.serverError.set(msg);
-          this.toast.show(msg, "error");
+          Object.values<string>(err.error ?? {}).forEach((msg) => {
+            this.toast.show(msg, "error");
+          });
         },
       });
   }
