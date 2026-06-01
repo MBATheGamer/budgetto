@@ -1,9 +1,11 @@
 import { Component, signal } from "@angular/core";
+import { RouterOutlet } from "@angular/router";
+import { ToastComponent } from "./toast.component";
 
 @Component({
   selector: "app-root",
-  imports: [],
-  template: "<h1>Hello, World!</h1>",
+  imports: [RouterOutlet, ToastComponent],
+  template: "<router-outlet /><app-toast />",
 })
 export class App {
   protected readonly title = signal("budgetto");
