@@ -59,15 +59,12 @@
                   type="email"
                   formControlName="email"
                   class="input w-full"
-                  [class.input-error]="isInvalid('email') || !!serverError()"
+                  [class.input-error]="isInvalid('email')"
                   placeholder="john.doe@example.com"
                 />
               </label>
               @if (isInvalid("email")) {
                 <span class="text-error text-xs">A valid email is required.</span>
-              }
-              @if (serverError()) {
-                <span class="text-error text-xs">{{ serverError() }}</span>
               }
             </div>
 
