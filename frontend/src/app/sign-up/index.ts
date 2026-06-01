@@ -1,14 +1,19 @@
 import { Component, inject, signal } from "@angular/core";
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from "@angular/forms";
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
+import { ToastService } from "../toast.service";
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get("password")?.value;
   const confirm = control.get("confirmPassword")?.value;
-  return password && confirm && password !== confirm
-    ? { passwordMismatch: true }
-    : null;
+  return password && confirm && password !== confirm ? { passwordMismatch: true } : null;
 }
 
 @Component({
@@ -20,6 +25,7 @@ export class SignUp {
   private fb = inject(FormBuilder);
   private http = inject(HttpClient);
   private router = inject(Router);
+  private toast = inject(ToastService);
 
   loading = signal(false);
   serverError = signal("");
@@ -32,7 +38,7 @@ export class SignUp {
       password: ["", [Validators.required, Validators.minLength(8)]],
       confirmPassword: ["", Validators.required],
     },
-    { validators: passwordMatchValidator }
+    { validators: passwordMatchValidator },
   );
 
   isInvalid(field: string): boolean {
@@ -58,11 +64,14 @@ export class SignUp {
       })
       .subscribe({
         next: () => {
-          this.router.navigate(["/sign-in"]);
+          this.toast.show("Account created successfully!", "success");
+          setTimeout(() => this.router.navigate(["/sign-in"]), 2000);
         },
         error: (err) => {
           this.loading.set(false);
-          this.serverError.set(err.error?.email ?? "Registration failed. Please try again.");
+          const msg = err.error?.email ?? "Registration failed. Please try again.";
+          this.serverError.set(msg);
+          this.toast.show(msg, "error");
         },
       });
   }
