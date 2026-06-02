@@ -40,3 +40,6 @@ Thumbs.db
 
 # lock files
 bun.lock
+
+# env
+env.ts
