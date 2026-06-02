@@ -66,11 +66,9 @@ export class SignUp {
           this.toast.show("Account created successfully!", "success");
           setTimeout(() => this.router.navigate(["/sign-in"]), 2000);
         },
-        error: (err: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           this.loading.set(false);
-          Object.values<string>(err.error ?? {}).forEach((msg) => {
-            this.toast.show(msg, "error");
-          });
+          this.toast.show(error.error, "error");
         },
       });
   }
