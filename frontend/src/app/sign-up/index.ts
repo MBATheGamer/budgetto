@@ -1,3 +1,4 @@
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, signal } from "@angular/core";
 import {
   AbstractControl,
@@ -7,7 +8,7 @@ import {
   Validators,
 } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { env } from "../../env";
 import { ToastService } from "../toast.service";
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
@@ -54,7 +55,7 @@ export class SignUp {
     const { firstName, lastName, email, password } = this.form.value;
 
     this.http
-      .post("http://localhost:8080/api/v1/auth/register", {
+      .post(`${env["BASE_URL"]}${env["API_VERSION"]}/auth/register`, {
         "first-name": firstName,
         "last-name": lastName,
         email,
@@ -65,11 +66,9 @@ export class SignUp {
           this.toast.show("Account created successfully!", "success");
           setTimeout(() => this.router.navigate(["/sign-in"]), 2000);
         },
-        error: (err: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           this.loading.set(false);
-          Object.values<string>(err.error ?? {}).forEach((msg) => {
-            this.toast.show(msg, "error");
-          });
+          this.toast.show(error.error, "error");
         },
       });
   }
