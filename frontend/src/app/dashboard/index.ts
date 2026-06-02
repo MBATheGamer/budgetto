@@ -5,11 +5,11 @@ import { env } from "../../env";
 import { AuthService } from "../services/auth.service";
 import { ToastService } from "../toast.service";
 
-interface UserResponse {
+type UserResponse = {
   "first-name": string;
   "last-name": string;
   email: string;
-}
+};
 
 @Component({
   selector: "app-dashboard",
