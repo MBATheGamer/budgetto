@@ -1,9 +1,10 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { env } from "../../env";
 import { AuthService } from "../services/auth.service";
+import { ToastService } from "../toast.service";
 
 interface JwtResponse {
   token: string;
@@ -19,9 +20,9 @@ export class SignIn {
   private http = inject(HttpClient);
   private router = inject(Router);
   private auth = inject(AuthService);
+  private toast = inject(ToastService);
 
   loading = signal(false);
-  serverError = signal("");
 
   form = this.fb.group({
     email: ["", [Validators.required, Validators.email]],
@@ -38,7 +39,6 @@ export class SignIn {
     if (this.form.invalid) return;
 
     this.loading.set(true);
-    this.serverError.set("");
 
     const { email, password } = this.form.value;
 
@@ -51,11 +51,12 @@ export class SignIn {
       .subscribe({
         next: (res) => {
           this.auth.setAccessToken(res.token);
+          this.toast.show("Successfully logged in!", "success");
           this.router.navigate(["/dashboard"]);
         },
-        error: () => {
+        error: (error: HttpErrorResponse) => {
           this.loading.set(false);
-          this.serverError.set("Invalid email or password.");
+          this.toast.show(error.error, "error");
         },
       });
   }
