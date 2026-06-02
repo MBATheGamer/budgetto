@@ -2,10 +2,6 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { env } from "../../env";
 
-interface JwtResponse {
-  token: string;
-}
-
 @Injectable({ providedIn: "root" })
 export class AuthService {
   private http = inject(HttpClient);
@@ -24,7 +20,7 @@ export class AuthService {
   }
 
   refresh() {
-    return this.http.post<JwtResponse>(
+    return this.http.post<{ token: string }>(
       `${env["BASE_URL"]}${env["API_VERSION"]}/auth/refresh`,
       {},
       { withCredentials: true },

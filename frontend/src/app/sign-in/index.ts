@@ -6,10 +6,6 @@ import { env } from "../../env";
 import { AuthService } from "../services/auth.service";
 import { ToastService } from "../toast.service";
 
-interface JwtResponse {
-  token: string;
-}
-
 @Component({
   selector: "app-sign-in",
   imports: [RouterLink, ReactiveFormsModule],
@@ -43,7 +39,9 @@ export class SignIn {
     const { email, password } = this.form.value;
 
     this.http
-      .post<JwtResponse>(
+      .post<{
+        token: string;
+      }>(
         `${env["BASE_URL"]}${env["API_VERSION"]}/auth/login`,
         { email, password },
         { withCredentials: true },
