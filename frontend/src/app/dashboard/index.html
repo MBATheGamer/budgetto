@@ -6,7 +6,7 @@
     @if (user()) {
       <div class="flex items-center gap-2">
         <span class="text-sm">{{ user()["first-name"] }} {{ user()["last-name"] }}</span>
-        <button class="btn btn-ghost btn-sm" (click)="auth.logout()">Sign out</button>
+        <button class="btn btn-ghost btn-sm" (click)="logout()">Sign out</button>
       </div>
     }
   </nav>
