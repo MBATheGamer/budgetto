@@ -2,7 +2,9 @@ package com.mbathegamer.budgetto.entities;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,6 +17,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -69,6 +72,10 @@ public class User implements UserDetails {
 
   @Column(name = "last_login")
   private LocalDateTime lastLogin;
+
+  @Builder.Default
+  @OneToMany(mappedBy = "user")
+  private Set<Category> categories = new HashSet<>();
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
