@@ -130,4 +130,15 @@ public class AuthController {
 
     return ResponseEntity.ok(mapper.toDto(user));
   }
+
+  @PostMapping("/logout")
+  public void logout(HttpServletResponse response) {
+    var cookie = new Cookie("refresh-token", "");
+    cookie.setHttpOnly(true);
+    cookie.setPath("/api/v1/auth/refresh");
+    cookie.setMaxAge(0);
+    cookie.setSecure(false);
+
+    response.addCookie(cookie);
+  }
 }
