@@ -1,6 +1,9 @@
 package com.mbathegamer.budgetto.controllers;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -46,6 +49,17 @@ public class CategoriesController {
     return ResponseEntity
         .created(uri)
         .body(categoryResponse);
+  }
+
+  @GetMapping()
+  public ResponseEntity<List<CategoryResponse>> getAllByUser(
+      @RequestHeader("Authorization")
+      String authorizationHeader) {
+    var response = service.findByUserId(getUserId(authorizationHeader));
+
+    var categories = response.stream().map(mapper::toDto).toList();
+
+    return ResponseEntity.ok(categories);
   }
 
   private Long getUserId(String authorizationHeader) {

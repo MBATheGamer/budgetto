@@ -1,5 +1,6 @@
 package com.mbathegamer.budgetto.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -32,5 +33,9 @@ public class CategoryService {
     categoryRepository.save(category);
 
     return Optional.of(category);
+  }
+
+  public List<Category> findByUserId(Long userId) {
+    return categoryRepository.findByUserId(userId);
   }
 }
