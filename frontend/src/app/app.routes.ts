@@ -5,6 +5,7 @@ import { SignUp } from "./auth/sign-up";
 import { AuthGuard } from "./guards/auth.guard";
 import { GuestGuard } from "./guards/guest.guard";
 import { Main } from "./main";
+import { Categories } from "./main/categories";
 import { Dashboard } from "./main/dashboard";
 
 export const routes: Routes = [
@@ -31,6 +32,10 @@ export const routes: Routes = [
       {
         path: "dashboard",
         component: Dashboard,
+      },
+      {
+        path: "categories",
+        component: Categories,
       },
     ],
   },
