@@ -1,0 +1,68 @@
+<div id="page-categories" class="page">
+  <div
+    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 pb-4 border-b border-dashed border-base-300"
+  >
+    <div>
+      <h2 class="text-xl font-bold">Categories</h2>
+      <p class="text-base-content/50 text-sm">Organize your transactions by expense type</p>
+    </div>
+    <button class="btn btn-primary btn-sm shrink-0">+ New category</button>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+    <div role="alert" class="alert alert-info py-2 text-sm">
+      <span>
+        ℹ {{ defaultCategories() }} default categories · {{ customCategories() }} custom categories
+      </span>
+    </div>
+    <div role="alert" class="alert alert-warning py-2 text-sm">
+      <span>⚠ Default categories cannot be deleted</span>
+    </div>
+  </div>
+
+  <div class="card border border-base-300 shadow-sm overflow-x-auto">
+    <table class="table table-zebra table-sm w-full min-w-max">
+      <thead>
+        <tr class="bg-base-200 text-xs uppercase tracking-wider">
+          <th>Icon</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Transactions</th>
+          <th>Total amount</th>
+          <th>Origin</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody class="text-sm">
+        @for (category of categories(); track category.id) {
+          <tr>
+            <td class="text-2xl">{{ category.icon }}</td>
+            <td class="font-medium">{{ category.name }}</td>
+            <td>
+              <span
+                [class]="`badge badge-sm badge-${category.type === 'EXPENSE' ? 'error' : 'success'} badge-outline`"
+              >
+                {{ category.type.toLowerCase() }}
+              </span>
+            </td>
+            <td>1</td>
+            <td>700 €</td>
+            <td>
+              <span
+                [class]="`badge badge-sm badge-${category['is-default'] ? 'primary' : 'ghost'} badge-outline`"
+              >
+                {{ category["is-default"] ? "System" : "Custom" }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-ghost btn-xs">✏</button>
+              @if (!category["is-default"]) {
+                <button class="btn btn-error btn-xs btn-outline">✕</button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
