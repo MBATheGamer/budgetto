@@ -38,4 +38,14 @@ public class CategoryService {
   public List<Category> findByUserId(Long userId) {
     return categoryRepository.findByUserId(userId);
   }
+
+  public Optional<Category> findById(Long id, Long userId) {
+    var category = categoryRepository.findById(id).orElse(null);
+
+    if (category == null || (category.getUser() != null && category.getUser().getId() != userId)) {
+      return Optional.empty();
+    }
+
+    return Optional.of(category);
+  }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -60,6 +61,22 @@ public class CategoriesController {
     var categories = response.stream().map(mapper::toDto).toList();
 
     return ResponseEntity.ok(categories);
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<CategoryResponse> getById(
+      @PathVariable
+      Long id,
+      @RequestHeader("Authorization")
+      String authorizationHeader) {
+
+    var category = service.findById(id, getUserId(authorizationHeader)).orElse(null);
+
+    if (category == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok(mapper.toDto(category));
   }
 
   private Long getUserId(String authorizationHeader) {
