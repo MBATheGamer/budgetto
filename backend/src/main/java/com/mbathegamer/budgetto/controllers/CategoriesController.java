@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,6 +72,23 @@ public class CategoriesController {
       String authorizationHeader) {
 
     var category = service.findById(id, getUserId(authorizationHeader)).orElse(null);
+
+    if (category == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok(mapper.toDto(category));
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<CategoryResponse> update(
+      @PathVariable
+      Long id,
+      @RequestBody
+      CategoryRequest request,
+      @RequestHeader("Authorization")
+      String authorizationHeader) {
+    var category = service.update(id, getUserId(authorizationHeader), request).orElse(null);
 
     if (category == null) {
       return ResponseEntity.notFound().build();

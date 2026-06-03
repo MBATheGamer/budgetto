@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.mbathegamer.budgetto.dtos.CategoryRequest;
 import com.mbathegamer.budgetto.entities.Category;
+import com.mbathegamer.budgetto.entities.CategoryType;
 import com.mbathegamer.budgetto.mappers.CategoryMapper;
 import com.mbathegamer.budgetto.repositories.CategoryRepository;
 import com.mbathegamer.budgetto.repositories.UserRepository;
@@ -47,5 +48,19 @@ public class CategoryService {
     }
 
     return Optional.of(category);
+  }
+
+  public Optional<Category> update(Long id, Long userId, CategoryRequest request) {
+    var category = categoryRepository.findById(id).orElse(null);
+
+    if (category == null || category.getUser() == null || category.getUser().getId() != userId) {
+      return Optional.empty();
+    }
+
+    category.setName(request.name());
+    category.setIcon(request.icon());
+    category.setType(CategoryType.valueOf(request.type()));
+
+    return Optional.of(categoryRepository.save(category));
   }
 }
