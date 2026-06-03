@@ -68,14 +68,14 @@ export class CategoryModal implements OnInit {
       type: this.form.value.type as "EXPENSE" | "INCOME",
     } as CategoryRequest;
 
-    const request$ =
+    const request =
       editing.id !== null
         ? this.categoryService.update(editing.id, body)
         : this.categoryService.create(body);
 
     this.submitting.set(true);
 
-    request$.subscribe({
+    request.subscribe({
       next: (saved) => {
         this.toastService.show(
           editing.id !== null ? "Category updated successfully" : "Category created successfully",
