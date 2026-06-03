@@ -5,3 +5,12 @@ export type UserResponse = {
   role: "USER" | "ADMIN";
   status: "PENDING" | "ACTIVE" | "BLOCKED";
 };
+
+export type CategoryResponse = {
+  id: number;
+  username: string;
+  name: string;
+  icon: string;
+  type: "EXPENSE" | "INCOME";
+  "is-default": string;
+};
