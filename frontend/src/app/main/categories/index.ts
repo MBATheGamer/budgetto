@@ -1,12 +1,13 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, OnInit, signal } from "@angular/core";
+import { CategoryModal } from "../../components/category-modal";
 import { CategoryService } from "../../services/category.service";
 import { ToastService } from "../../services/toast.service";
 import { Category } from "../../types";
 
 @Component({
   selector: "app-categories",
-  imports: [],
+  imports: [CategoryModal],
   templateUrl: "./index.html",
 })
 export class Categories implements OnInit {
@@ -30,5 +31,9 @@ export class Categories implements OnInit {
         this.toastService.show(error.error, "error");
       },
     });
+  }
+
+  updateRequest(category: Category | null, modal: CategoryModal) {
+    modal.open(category);
   }
 }
