@@ -13,5 +13,9 @@ public record UserResponse(
     @JsonProperty("last-name")
     String lastName,
 
-    String email
+    String email,
+
+    String role,
+
+    String status
 ) {}
