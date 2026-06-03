@@ -14,3 +14,9 @@ export type Category = {
   type: "EXPENSE" | "INCOME";
   "is-default": boolean;
 };
+
+export type CategoryRequest = {
+  name: string;
+  icon: string;
+  type: "EXPENSE" | "INCOME";
+};
