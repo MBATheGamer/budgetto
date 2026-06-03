@@ -38,6 +38,15 @@ export class Categories implements OnInit {
     });
   }
 
+  onSaved({ category, editingId }: { category: Category; editingId: number | null }) {
+    if (editingId !== null) {
+      this.categories.update((list) => list.map((c) => (c.id === editingId ? category : c)));
+    } else {
+      this.categories.update((list) => [...list, category]);
+      this.customCategories.update((n) => n + 1);
+    }
+  }
+
   confirmDelete() {
     if (this.categoryId) {
       this.categoryService.delete(this.categoryId).subscribe({
@@ -46,6 +55,7 @@ export class Categories implements OnInit {
         },
       });
       this.categories.set(this.categories().filter((category) => category.id !== this.categoryId));
+      this.customCategories.update((n) => n - 1);
     }
   }
 

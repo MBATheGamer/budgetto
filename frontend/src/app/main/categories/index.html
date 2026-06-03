@@ -87,7 +87,7 @@
   </div>
 </div>
 
-<category-modal #categoryModal />
+<category-modal #categoryModal (saved)="onSaved($event)" />
 
 <delete-modal
   [title]="title()"
