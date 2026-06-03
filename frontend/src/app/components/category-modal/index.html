@@ -1,0 +1,39 @@
+<dialog #nativeDialog class="modal">
+  <div class="modal-box max-w-sm">
+    <div class="flex justify-between items-center border-b border-base-300 pb-3 mb-4">
+      <h3 class="font-bold text-lg">⊞ New category</h3>
+      <form method="dialog">
+        <button class="btn btn-ghost btn-sm btn-circle text-base">✕</button>
+      </form>
+    </div>
+    <div class="space-y-6">
+      <label class="floating-label w-full">
+        <span class="text-xs font-semibold uppercase tracking-wider">Category name *</span>
+        <input
+          type="text"
+          [value]="category().name"
+          placeholder="Ex. : Abonnements, Cadeaux…"
+          class="input input-bordered w-full"
+        />
+      </label>
+      <div class="grid grid-cols-2 gap-3">
+        <label class="floating-label">
+          <span class="text-xs font-semibold uppercase tracking-wider">Icon (emoji)</span>
+          <input type="text" [value]="category().icon" class="input input-bordered"
+        /></label>
+        <label class="floating-label">
+          <span class="text-xs font-semibold uppercase tracking-wider">Type *</span>
+          <select [value]="category().type" class="select select-bordered">
+            <option value="EXPENSE">Expense</option>
+            <option value="INCOME">Income</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="modal-action mt-4 gap-2">
+      <form method="dialog"><button class="btn btn-ghost btn-sm">Cancel</button></form>
+      <button class="btn btn-primary btn-sm">Create</button>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
