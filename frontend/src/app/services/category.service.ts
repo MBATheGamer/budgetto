@@ -11,4 +11,8 @@ export class CategoryService {
   public getAll(): Observable<Category[]> {
     return this.http.get<Category[]>(`${env["BASE_URL"]}${env["API_VERSION"]}/categories`);
   }
+
+  public delete(categoryId: number) {
+    return this.http.delete(`${env["BASE_URL"]}${env["API_VERSION"]}/categories/${categoryId}`);
+  }
 }
