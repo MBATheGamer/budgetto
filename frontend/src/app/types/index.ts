@@ -15,8 +15,4 @@ export type Category = {
   "is-default": boolean;
 };
 
-export type CategoryRequest = {
-  name: string;
-  icon: string;
-  type: "EXPENSE" | "INCOME";
-};
+export type CategoryRequest = Omit<Category, "id" | "username" | "is-default">;
