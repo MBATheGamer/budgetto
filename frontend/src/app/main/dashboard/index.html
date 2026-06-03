@@ -1,0 +1,7 @@
+<div class="flex-1 flex items-center justify-center">
+  @if (user()) {
+    <h1 class="text-2xl font-bold">Welcome, {{ user()["first-name"] }}!</h1>
+  } @else {
+    <span class="loading loading-spinner loading-md"></span>
+  }
+</div>

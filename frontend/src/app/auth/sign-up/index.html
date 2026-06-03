@@ -1,0 +1,109 @@
+<div class="card-body gap-3">
+  <div class="text-center">
+    <h1 class="text-2xl font-bold">Create an account</h1>
+    <p class="text-base-content/50 text-sm mt-1">Join BudgetFlow for free</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="flex flex-col gap-3">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="floating-label w-full">
+            <span class="font-semibold uppercase tracking-wider">First Name</span>
+            <input
+              type="text"
+              formControlName="firstName"
+              class="input w-full"
+              [class.input-error]="isInvalid('firstName')"
+              placeholder="John"
+            />
+          </label>
+          @if (isInvalid("firstName")) {
+            <span class="text-error text-xs">First name is required</span>
+          }
+        </div>
+        <div>
+          <label class="floating-label w-full">
+            <span class="font-semibold uppercase tracking-wider">Last Name</span>
+            <input
+              type="text"
+              formControlName="lastName"
+              class="input w-full"
+              [class.input-error]="isInvalid('lastName')"
+              placeholder="Doe"
+            />
+          </label>
+          @if (isInvalid("lastName")) {
+            <span class="text-error text-xs">Last name is required</span>
+          }
+        </div>
+      </div>
+
+      <div>
+        <label class="floating-label w-full">
+          <span class="font-semibold uppercase tracking-wider">E-mail Address</span>
+          <input
+            type="email"
+            formControlName="email"
+            class="input w-full"
+            [class.input-error]="isInvalid('email')"
+            placeholder="john.doe@example.com"
+          />
+        </label>
+        @if (isInvalid("email")) {
+          <span class="text-error text-xs">A valid email is required.</span>
+        }
+      </div>
+
+      <div>
+        <label class="floating-label w-full">
+          <span class="font-semibold uppercase tracking-wider">Password</span>
+          <input
+            type="password"
+            formControlName="password"
+            class="input w-full"
+            [class.input-error]="isInvalid('password')"
+            placeholder="password"
+          />
+        </label>
+        @if (isInvalid("password")) {
+          <span class="text-error text-xs">Password must be at least 8 characters.</span>
+        }
+      </div>
+
+      <div>
+        <label class="floating-label w-full">
+          <span class="font-semibold uppercase tracking-wider">Confirm Password</span>
+          <input
+            type="password"
+            formControlName="confirmPassword"
+            class="input w-full"
+            [class.input-error]="isInvalid('confirmPassword') || form.hasError('passwordMismatch')"
+            placeholder="confirm password"
+          />
+        </label>
+        @if (form.hasError("passwordMismatch") && form.get("confirmPassword")?.touched) {
+          <span class="text-error text-xs">Passwords do not match.</span>
+        }
+      </div>
+      <!--
+            <label class="cursor-pointer flex items-center gap-2">
+              <input type="checkbox" class="checkbox checkbox-xs checkbox-primary mt-1 shrink-0" />
+              <span class="text-xs text-base-content/70 leading-relaxed">
+                I agree to the Terms of Use and Privacy Policy
+              </span>
+            </label>
+            -->
+      <button type="submit" class="btn btn-primary btn-sm w-full" [disabled]="loading()">
+        @if (loading()) {
+          <span class="loading loading-spinner loading-xs"></span>
+        } @else {
+          Create my account
+        }
+      </button>
+
+      <div class="divider my-0 text-xs text-base-content/40">Already registered?</div>
+      <a [routerLink]="['/sign-in']" class="btn btn-ghost btn-sm w-full">Sign in</a>
+    </div>
+  </form>
+</div>

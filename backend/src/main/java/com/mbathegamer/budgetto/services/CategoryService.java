@@ -13,7 +13,6 @@ import com.mbathegamer.budgetto.repositories.CategoryRepository;
 import com.mbathegamer.budgetto.repositories.UserRepository;
 
 import lombok.AllArgsConstructor;
-import lombok.var;
 
 @Service
 @AllArgsConstructor

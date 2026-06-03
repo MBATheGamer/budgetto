@@ -1,32 +1,39 @@
 import { HttpClient } from "@angular/common/http";
 import { Component, inject, OnInit, signal } from "@angular/core";
-import { Router } from "@angular/router";
+import { Router, RouterLinkWithHref, RouterOutlet } from "@angular/router";
 import { env } from "../../env";
 import { AuthService } from "../services/auth.service";
-import { ToastService } from "../toast.service";
-
-type UserResponse = {
-  "first-name": string;
-  "last-name": string;
-  email: string;
-};
+import { ToastService } from "../services/toast.service";
+import { User } from "../types";
 
 @Component({
-  selector: "app-dashboard",
+  selector: "app-main",
+  imports: [RouterOutlet, RouterLinkWithHref],
   templateUrl: "./index.html",
 })
-export class Dashboard implements OnInit {
+export class Main implements OnInit {
   private router = inject(Router);
   private http = inject(HttpClient);
   private toast = inject(ToastService);
   private authService = inject(AuthService);
 
-  public user = signal<UserResponse>({ "first-name": "", "last-name": "", email: "" });
+  public user = signal<User>({
+    "first-name": "",
+    "last-name": "",
+    email: "",
+    role: "USER",
+    status: "ACTIVE",
+  });
 
   ngOnInit() {
-    this.http.get<UserResponse>(`${env["BASE_URL"]}${env["API_VERSION"]}/auth/me`).subscribe({
+    this.http.get<User>(`${env["BASE_URL"]}${env["API_VERSION"]}/auth/me`).subscribe({
       next: (res) => {
-        this.user.set(res);
+        this.authService.setUser(res);
+        const user = this.authService.getUser();
+
+        if (user != null) {
+          this.user.set(user);
+        }
       },
       error: () => {
         this.authService.logout();
@@ -38,6 +45,7 @@ export class Dashboard implements OnInit {
     this.authService.logout().subscribe({
       next: () => {
         this.authService.clearAccessToken();
+        this.authService.clearUser();
         this.router.navigate(["/sign-in"]);
       },
       error: () => {

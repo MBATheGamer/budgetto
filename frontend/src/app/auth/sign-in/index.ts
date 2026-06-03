@@ -2,9 +2,9 @@ import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
-import { env } from "../../env";
-import { AuthService } from "../services/auth.service";
-import { ToastService } from "../toast.service";
+import { env } from "../../../env";
+import { AuthService } from "../../services/auth.service";
+import { ToastService } from "../../services/toast.service";
 
 @Component({
   selector: "app-sign-in",

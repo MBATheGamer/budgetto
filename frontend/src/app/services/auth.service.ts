@@ -1,22 +1,34 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { env } from "../../env";
+import { User } from "../types";
 
 @Injectable({ providedIn: "root" })
 export class AuthService {
   private http = inject(HttpClient);
-  private readonly tokenKey = "access-token";
 
-  setAccessToken(token: string) {
-    localStorage.setItem(this.tokenKey, token);
+  public setAccessToken(token: string) {
+    localStorage.setItem(env["ACCESS_TOKEN_NAME"], token);
   }
 
-  getAccessToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+  public setUser(user: User) {
+    localStorage.setItem(env["USER_NAME"], JSON.stringify(user));
   }
 
-  clearAccessToken() {
-    localStorage.removeItem(this.tokenKey);
+  public getAccessToken(): string | null {
+    return localStorage.getItem(env["ACCESS_TOKEN_NAME"]);
+  }
+
+  public getUser(): User | null {
+    return JSON.parse(localStorage.getItem(env["USER_NAME"]) as string);
+  }
+
+  public clearAccessToken() {
+    localStorage.removeItem(env["ACCESS_TOKEN_NAME"]);
+  }
+
+  public clearUser() {
+    localStorage.removeItem(env["USER_NAME"]);
   }
 
   refresh() {
@@ -28,7 +40,7 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem(this.tokenKey);
+    return !!localStorage.getItem(env["ACCESS_TOKEN_NAME"]);
   }
 
   logout() {
