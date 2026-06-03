@@ -1,0 +1,64 @@
+<div class="card-body gap-4">
+  <div class="text-center">
+    <div class="text-4xl mb-2">📊</div>
+    <h1 class="text-2xl font-bold">BudgetFlow</h1>
+    <p class="text-base-content/50 text-sm mt-1">Login to your account</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="flex flex-col gap-4">
+      <div>
+        <label class="floating-label w-full">
+          <span class="font-semibold uppercase tracking-wider">E-mail Address</span>
+          <input
+            type="email"
+            formControlName="email"
+            class="input w-full"
+            [class.input-error]="isInvalid('email')"
+            placeholder="john.doe@example.com"
+          />
+        </label>
+        @if (isInvalid("email")) {
+          <span class="text-error text-xs">A valid email is required.</span>
+        }
+      </div>
+
+      <div>
+        <label class="floating-label w-full">
+          <span class="font-semibold uppercase tracking-wider">Password</span>
+          <input
+            type="password"
+            formControlName="password"
+            class="input w-full"
+            [class.input-error]="isInvalid('password')"
+            placeholder="password"
+          />
+        </label>
+        @if (isInvalid("password")) {
+          <span class="text-error text-xs">Password is required.</span>
+        }
+      </div>
+
+      <div class="flex justify-between items-center">
+        <label class="cursor-pointer flex items-center gap-2">
+          <input type="checkbox" class="checkbox checkbox-xs checkbox-primary" />
+          <span class="text-xs">Remember me</span>
+        </label>
+        <a [routerLink]="['/forgot-password']" class="link link-primary text-xs">
+          Forget your password?
+        </a>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-sm w-full" [disabled]="loading()">
+        @if (loading()) {
+          <span class="loading loading-spinner loading-xs"></span>
+        } @else {
+          Sign in
+        }
+      </button>
+
+      <div class="divider my-0 text-xs text-base-content/40">Don't have an account yet?</div>
+      <a [routerLink]="['/sign-up']" class="btn btn-ghost btn-sm w-full">Sign up</a>
+    </div>
+  </form>
+</div>

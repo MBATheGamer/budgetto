@@ -1,0 +1,70 @@
+<div class="drawer lg:drawer-open flex-1" style="min-height: 600px">
+  <input id="sidebar-toggle" type="checkbox" class="drawer-toggle" />
+
+  <div class="drawer-content flex flex-col min-h-0">
+    <div class="navbar bg-base-100 border-b border-base-300 lg:hidden px-3 min-h-0 h-12 shrink-0">
+      <label for="sidebar-toggle" class="btn btn-ghost btn-sm text-lg">&#x2630;</label>
+      <span class="font-bold ml-2 text-sm">📊 BudgetFlow</span>
+      <div class="ml-auto">
+        <div class="avatar avatar-placeholder">
+          <div class="bg-primary text-primary-content rounded-full w-7 text-xs font-bold">JD</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1 overflow-auto bg-base-50 p-4 sm:p-5">
+      <router-outlet />
+    </div>
+  </div>
+
+  <div class="drawer-side z-40">
+    <label for="sidebar-toggle" class="drawer-overlay"></label>
+    <aside class="w-56 bg-base-100 border-b border-base-300 min-h-full flex flex-col">
+      <div
+        class="px-4 py-4 border-b border-base-300 font-bold text-base bg-base-200 hidden lg:block"
+      >
+        📊 BudgetFlow
+      </div>
+      <ul class="menu menu-sm p-2 flex-1 gap-0.5 w-full">
+        <li class="menu-title text-xs tracking-wider">Navigation</li>
+        <li class="w-full">
+          <a
+            [routerLink]="['/dashboard']"
+            class="nav-link text-sm py-2 rounded-lg"
+            data-page="dashboard"
+          >
+            &#x25C7; Dashboard
+          </a>
+        </li>
+      </ul>
+      <div class="p-3 border-t border-base-300">
+        <details class="dropdown dropdown-top w-full">
+          <ul class="menu w-full dropdown-content gap-2 bg-base-300 rounded-xl p-2.5 mb-2">
+            <li class="drop-header">{{ `${user()["first-name"]} ${user()["last-name"]}` }}</li>
+            <hr />
+            <li>
+              <button (click)="logout()" class="menu-item danger">⎋&nbsp; Logout</button>
+            </li>
+          </ul>
+          <summary
+            class="cursor-pointer flex items-center gap-2 hover:bg-base-300 rounded-xl p-2.5"
+          >
+            <div class="avatar avatar-placeholder shrink-0">
+              <div class="bg-primary text-primary-content rounded-full w-8 text-xs font-bold">
+                {{ user()["first-name"][0] + user()["last-name"][0] }}
+              </div>
+            </div>
+            <div class="min-w-0">
+              <div class="font-bold text-xs truncate">
+                {{ `${user()["first-name"]} ${user()["last-name"][0]}.` }}
+              </div>
+              @if (user().role === "ADMIN") {
+                <div class="text-xs text-base-content/50 truncate">Administrator</div>
+              }
+            </div>
+          </summary>
+        </details>
+      </div>
+    </aside>
+  </div>
+</div>

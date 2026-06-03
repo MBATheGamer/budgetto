@@ -8,8 +8,8 @@ import {
   Validators,
 } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
-import { env } from "../../env";
-import { ToastService } from "../toast.service";
+import { env } from "../../../env";
+import { ToastService } from "../../services/toast.service";
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get("password")?.value;
