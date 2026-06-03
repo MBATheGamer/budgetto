@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from "@angular/core";
 import { AuthService } from "../../services/auth.service";
-import { UserResponse } from "../../types";
+import { User } from "../../types";
 
 @Component({
   selector: "app-dashboard",
@@ -9,7 +9,7 @@ import { UserResponse } from "../../types";
 export class Dashboard implements OnInit {
   private readonly authService = inject(AuthService);
 
-  public user = signal<UserResponse>({
+  public user = signal<User>({
     "first-name": "",
     "last-name": "",
     email: "",

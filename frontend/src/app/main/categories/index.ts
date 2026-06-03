@@ -2,7 +2,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, OnInit, signal } from "@angular/core";
 import { CategoryService } from "../../services/category.service";
 import { ToastService } from "../../services/toast.service";
-import { CategoryResponse } from "../../types";
+import { Category } from "../../types";
 
 @Component({
   selector: "app-categories",
@@ -13,7 +13,7 @@ export class Categories implements OnInit {
   private readonly categoryService = inject(CategoryService);
   private readonly toastService = inject(ToastService);
 
-  public categories = signal<CategoryResponse[]>([]);
+  public categories = signal<Category[]>([]);
   public defaultCategories = signal(0);
   public customCategories = signal(0);
 

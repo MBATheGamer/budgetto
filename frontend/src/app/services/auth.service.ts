@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { env } from "../../env";
-import { UserResponse } from "../types";
+import { User } from "../types";
 
 @Injectable({ providedIn: "root" })
 export class AuthService {
@@ -11,7 +11,7 @@ export class AuthService {
     localStorage.setItem(env["ACCESS_TOKEN_NAME"], token);
   }
 
-  public setUser(user: UserResponse) {
+  public setUser(user: User) {
     localStorage.setItem(env["USER_NAME"], JSON.stringify(user));
   }
 
@@ -19,7 +19,7 @@ export class AuthService {
     return localStorage.getItem(env["ACCESS_TOKEN_NAME"]);
   }
 
-  public getUser(): UserResponse | null {
+  public getUser(): User | null {
     return JSON.parse(localStorage.getItem(env["USER_NAME"]) as string);
   }
 

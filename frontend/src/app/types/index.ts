@@ -1,4 +1,4 @@
-export type UserResponse = {
+export type User = {
   "first-name": string;
   "last-name": string;
   email: string;
@@ -6,11 +6,11 @@ export type UserResponse = {
   status: "PENDING" | "ACTIVE" | "BLOCKED";
 };
 
-export type CategoryResponse = {
-  id: number;
+export type Category = {
+  id: number | null;
   username: string;
   name: string;
   icon: string;
   type: "EXPENSE" | "INCOME";
-  "is-default": string;
+  "is-default": boolean;
 };

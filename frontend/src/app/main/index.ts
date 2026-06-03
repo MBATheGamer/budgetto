@@ -4,7 +4,7 @@ import { Router, RouterLinkWithHref, RouterOutlet } from "@angular/router";
 import { env } from "../../env";
 import { AuthService } from "../services/auth.service";
 import { ToastService } from "../services/toast.service";
-import { UserResponse } from "../types";
+import { User } from "../types";
 
 @Component({
   selector: "app-main",
@@ -17,7 +17,7 @@ export class Main implements OnInit {
   private toast = inject(ToastService);
   private authService = inject(AuthService);
 
-  public user = signal<UserResponse>({
+  public user = signal<User>({
     "first-name": "",
     "last-name": "",
     email: "",
@@ -26,7 +26,7 @@ export class Main implements OnInit {
   });
 
   ngOnInit() {
-    this.http.get<UserResponse>(`${env["BASE_URL"]}${env["API_VERSION"]}/auth/me`).subscribe({
+    this.http.get<User>(`${env["BASE_URL"]}${env["API_VERSION"]}/auth/me`).subscribe({
       next: (res) => {
         this.authService.setUser(res);
         const user = this.authService.getUser();
