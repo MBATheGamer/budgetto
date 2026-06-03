@@ -7,7 +7,9 @@
       <span class="font-bold ml-2 text-sm">📊 BudgetFlow</span>
       <div class="ml-auto">
         <div class="avatar avatar-placeholder">
-          <div class="bg-primary text-primary-content rounded-full w-7 text-xs font-bold">JD</div>
+          <div class="bg-primary text-primary-content rounded-full w-7 text-xs font-bold">
+            {{ user()["first-name"][0] + user()["last-name"][0] }}
+          </div>
         </div>
       </div>
     </div>
