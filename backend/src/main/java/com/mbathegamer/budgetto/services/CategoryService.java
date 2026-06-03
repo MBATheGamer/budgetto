@@ -63,4 +63,12 @@ public class CategoryService {
 
     return Optional.of(categoryRepository.save(category));
   }
+
+  public void delete(Long id, Long userId) {
+    var category = categoryRepository.findById(id).orElse(null);
+
+    if (category != null && category.getUser() != null && category.getUser().getId() == userId) {
+      categoryRepository.delete(category);
+    }
+  }
 }

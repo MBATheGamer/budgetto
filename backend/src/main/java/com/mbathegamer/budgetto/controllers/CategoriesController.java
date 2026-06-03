@@ -3,6 +3,7 @@ package com.mbathegamer.budgetto.controllers;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -95,6 +96,15 @@ public class CategoriesController {
     }
 
     return ResponseEntity.ok(mapper.toDto(category));
+  }
+
+  @DeleteMapping("/{id}")
+  public void delete(
+      @PathVariable
+      Long id,
+      @RequestHeader("Authorization")
+      String authorizationHeader) {
+    service.delete(id, getUserId(authorizationHeader));
   }
 
   private Long getUserId(String authorizationHeader) {
