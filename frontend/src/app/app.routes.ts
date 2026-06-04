@@ -7,6 +7,7 @@ import { GuestGuard } from "./guards/guest.guard";
 import { Main } from "./main";
 import { Categories } from "./main/categories";
 import { Dashboard } from "./main/dashboard";
+import { Budgets } from "./main/budgets";
 
 export const routes: Routes = [
   {
@@ -36,6 +37,10 @@ export const routes: Routes = [
       {
         path: "categories",
         component: Categories,
+      },
+      {
+        path: "budgets",
+        component: Budgets,
       },
     ],
   },
