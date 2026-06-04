@@ -1,0 +1,71 @@
+<div id="page-budgets" class="page">
+  <div
+    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 pb-4 border-b border-dashed border-base-300"
+  >
+    <div>
+      <h2 class="text-xl font-bold">Budgets</h2>
+      <p class="text-base-content/50 text-sm">Set your limits by category and period</p>
+    </div>
+    <button class="btn btn-primary btn-sm shrink-0" (click)="updateRequest(null, budgetModal)">
+      + New budget
+    </button>
+  </div>
+
+  <div class="card border border-base-300 shadow-sm overflow-x-auto">
+    <table class="table table-sm w-full min-w-max">
+      <thead>
+        <tr class="bg-base-200 text-xs uppercase tracking-wider">
+          <th>Category</th>
+          <th>Period</th>
+          <th>Limit</th>
+          <th>Spent</th>
+          <th>Remaining</th>
+          <th class="min-w-37.5">Progress</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody class="text-sm">
+        @for (budget of budgets(); track budget.id) {
+          <tr>
+            <td class="font-medium">{{ budget["category-name"] }}</td>
+            <td class="text-xs text-base-content/60">{{ budget.period }}</td>
+            <td>{{ budget["amount-limit"] }} €</td>
+            <td>—</td>
+            <td>—</td>
+            <td>
+              <progress class="progress h-2 w-32" value="0" max="100"></progress>
+            </td>
+            <td>—</td>
+            <td class="flex gap-1">
+              <button class="btn btn-ghost btn-xs" (click)="updateRequest(budget, budgetModal)">
+                ✏
+              </button>
+              <button
+                class="btn btn-error btn-xs btn-outline"
+                (click)="deleteRequest(budget, confirmModal)"
+              >
+                ✕
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="8" class="text-center p-8 bg-base-200 text-base-content/50">
+              No budgets yet.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<budget-modal #budgetModal (saved)="onSaved($event)" />
+
+<delete-modal
+  [title]="title()"
+  [content]="content()"
+  (confirmDelete)="confirmDelete()"
+  #confirmModal
+/>
