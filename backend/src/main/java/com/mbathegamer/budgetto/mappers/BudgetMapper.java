@@ -20,9 +20,13 @@ public class BudgetMapper {
 
     return new BudgetResponse(
         budget.getId(),
+        budget.getCategory().getId(),
         category,
         budget.getPeriod().name().toLowerCase(),
-        budget.getAmountLimit().doubleValue()
+        budget.getAmountLimit().doubleValue(),
+        budget.getStartDate(),
+        budget.getEndDate(),
+        budget.getAlertThreshold()
     );
   }
 
