@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.mbathegamer.budgetto.dtos.CategoryRequest;
-import com.mbathegamer.budgetto.dtos.CategoryResponse;
-import com.mbathegamer.budgetto.mappers.CategoryMapper;
-import com.mbathegamer.budgetto.services.CategoryService;
+import com.mbathegamer.budgetto.dtos.BudgetRequest;
+import com.mbathegamer.budgetto.dtos.BudgetResponse;
+import com.mbathegamer.budgetto.mappers.BudgetMapper;
+import com.mbathegamer.budgetto.services.BudgetService;
 import com.mbathegamer.budgetto.services.JwtService;
 
 import jakarta.validation.Valid;
@@ -25,77 +25,76 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/categories")
-public class CategoriesController {
-  private final CategoryService service;
-  private final CategoryMapper mapper;
+@RequestMapping("/budgets")
+public class BudgetController {
+  private final BudgetService service;
+  private final BudgetMapper mapper;
   private final JwtService jwtService;
 
   @PostMapping()
-  public ResponseEntity<CategoryResponse> create(
+  public ResponseEntity<BudgetResponse> create(
       @Valid
       @RequestBody
-      CategoryRequest request,
+      BudgetRequest request,
       @RequestHeader("Authorization")
       String authorizationHeader,
       UriComponentsBuilder uriBuilder) throws Exception {
     var response = service.create(getUserId(authorizationHeader), request)
         .orElseThrow(() -> new Exception("Can't create category"));
 
-    var categoryResponse = mapper.toDto(response);
+    var budgetResponse = mapper.toDto(response);
 
     var uri = uriBuilder
-        .path("/category/{id}")
-        .buildAndExpand(categoryResponse.id())
+        .path("/budgets/{id}")
+        .buildAndExpand(budgetResponse.id())
         .toUri();
 
     return ResponseEntity
         .created(uri)
-        .body(categoryResponse);
+        .body(budgetResponse);
   }
 
   @GetMapping()
-  public ResponseEntity<List<CategoryResponse>> getAllByUser(
+  public ResponseEntity<List<BudgetResponse>> getAllByUser(
       @RequestHeader("Authorization")
       String authorizationHeader) {
     var response = service.findByUserId(getUserId(authorizationHeader));
 
-    var categories = response.stream().map(mapper::toDto).toList();
+    var budgets = response.stream().map(mapper::toDto).toList();
 
-    return ResponseEntity.ok(categories);
+    return ResponseEntity.ok(budgets);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<CategoryResponse> getById(
+  public ResponseEntity<BudgetResponse> getById(
       @PathVariable
       Long id,
       @RequestHeader("Authorization")
       String authorizationHeader) {
+    var budget = service.findById(id, getUserId(authorizationHeader)).orElse(null);
 
-    var category = service.findById(id, getUserId(authorizationHeader)).orElse(null);
-
-    if (category == null) {
+    if (budget == null) {
       return ResponseEntity.notFound().build();
     }
 
-    return ResponseEntity.ok(mapper.toDto(category));
+    return ResponseEntity.ok(mapper.toDto(budget));
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<CategoryResponse> update(
+  public ResponseEntity<BudgetResponse> update(
       @PathVariable
       Long id,
       @RequestBody
-      CategoryRequest request,
+      BudgetRequest request,
       @RequestHeader("Authorization")
       String authorizationHeader) {
-    var category = service.update(id, getUserId(authorizationHeader), request).orElse(null);
+    var budget = service.update(id, getUserId(authorizationHeader), request).orElse(null);
 
-    if (category == null) {
+    if (budget == null) {
       return ResponseEntity.notFound().build();
     }
 
-    return ResponseEntity.ok(mapper.toDto(category));
+    return ResponseEntity.ok(mapper.toDto(budget));
   }
 
   @DeleteMapping("/{id}")
