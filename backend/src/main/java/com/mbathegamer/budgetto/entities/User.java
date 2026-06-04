@@ -77,6 +77,14 @@ public class User implements UserDetails {
   @OneToMany(mappedBy = "user")
   private Set<Category> categories = new HashSet<>();
 
+  @Builder.Default
+  @OneToMany(mappedBy = "user")
+  private Set<Budget> budgets = new HashSet<>();
+
+  @Builder.Default
+  @OneToMany(mappedBy = "createdBy")
+  private Set<SharedBudget> sharedBudget = new HashSet<>();
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
