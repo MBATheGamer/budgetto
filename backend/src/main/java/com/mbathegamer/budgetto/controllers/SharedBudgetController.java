@@ -158,6 +158,45 @@ public class SharedBudgetController {
     return ResponseEntity.ok(mapper.toDto(sharedBudget));
   }
 
+  @PostMapping("/{id}/members/{member-id}")
+  public ResponseEntity<Void> updateMemberStatus(
+      @PathVariable
+      Long id,
+      @PathVariable("member-id")
+      Long memberId,
+      @RequestBody
+      String status,
+      @RequestHeader("Authorization")
+      String authorizationHeader) {
+    var statusValue = SharedBudgetMemberStatus.valueOf(status);
+
+    if (statusValue != SharedBudgetMemberStatus.ACTIVE) {
+      sharedBudgetMemberService.delete(id, memberId);
+      return ResponseEntity.ok().build();
+    }
+
+    var userId = getUserId(authorizationHeader);
+    var sharedBudget = service.findById(id, userId).orElse(null);
+
+    if (sharedBudget == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    var sharedBudgetMember = sharedBudgetMemberService
+        .findBySharedBudgetIdAndUserId(memberId, sharedBudget.getId(), userId)
+        .orElse(null);
+
+    if (sharedBudgetMember == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    sharedBudgetMember = sharedBudgetMemberService
+        .update(memberId, userId, SharedBudgetMemberStatus.ACTIVE)
+        .orElse(sharedBudgetMember);
+
+    return ResponseEntity.ok().build();
+  }
+
   @DeleteMapping("/{id}")
   public void delete(
       @PathVariable

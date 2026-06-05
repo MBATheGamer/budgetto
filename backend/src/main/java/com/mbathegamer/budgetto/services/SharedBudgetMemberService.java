@@ -70,9 +70,10 @@ public class SharedBudgetMemberService {
     return Optional.of(member);
   }
 
-  // Optional<SharedBudgetMember> findBy() {
-  // return sharedBudgetMemberRepository.findBySharedBudgetIdAndUserId(null, null, null)
-  // }
+  public Optional<SharedBudgetMember> findBySharedBudgetIdAndUserId(Long id, Long sharedBudgetId,
+      Long userId) {
+    return sharedBudgetMemberRepository.findBySharedBudgetIdAndUserId(id, sharedBudgetId, userId);
+  }
 
   public Optional<SharedBudgetMember> update(Long id, Long userId,
       SharedBudgetMemberStatus status) {
