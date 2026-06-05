@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.mbathegamer.budgetto.dtos.SharedBudgetMemberRequest;
 import com.mbathegamer.budgetto.dtos.SharedBudgetRequest;
 import com.mbathegamer.budgetto.dtos.SharedBudgetResponse;
 import com.mbathegamer.budgetto.entities.SharedBudgetMember;
@@ -137,7 +138,7 @@ public class SharedBudgetController {
       @PathVariable
       Long id,
       @RequestBody
-      String email,
+      SharedBudgetMemberRequest request,
       @RequestHeader("Authorization")
       String authorizationHeader) {
     var sharedBudget = service.findById(id, getUserId(authorizationHeader)).orElse(null);
@@ -146,7 +147,10 @@ public class SharedBudgetController {
     }
 
     var sharedBudgetMember = sharedBudgetMemberService.create(
-        email, sharedBudget, SharedBudgetMemberRole.MEMBER, SharedBudgetMemberStatus.PENDING
+        request.email(),
+        sharedBudget,
+        SharedBudgetMemberRole.MEMBER,
+        SharedBudgetMemberStatus.PENDING
     ).orElse(null);
 
     if (sharedBudgetMember == null) {
@@ -165,10 +169,10 @@ public class SharedBudgetController {
       @PathVariable("member-id")
       Long memberId,
       @RequestBody
-      String status,
+      SharedBudgetMemberRequest request,
       @RequestHeader("Authorization")
       String authorizationHeader) {
-    var statusValue = SharedBudgetMemberStatus.valueOf(status);
+    var statusValue = SharedBudgetMemberStatus.valueOf(request.status());
 
     if (statusValue != SharedBudgetMemberStatus.ACTIVE) {
       sharedBudgetMemberService.delete(id, memberId);
