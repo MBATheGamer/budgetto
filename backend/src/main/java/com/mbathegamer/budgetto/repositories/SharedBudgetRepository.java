@@ -10,6 +10,6 @@ import com.mbathegamer.budgetto.entities.SharedBudget;
 
 @Repository
 public interface SharedBudgetRepository extends JpaRepository<SharedBudget, Long> {
-  @Query("SELECT DISTINCT sb FROM SharedBudget sb JOIN sb.member m WHERE m.user.id = :userId")
+  @Query("SELECT DISTINCT sb FROM SharedBudget sb JOIN sb.members m WHERE m.user.id = :userId")
   List<SharedBudget> findByUserId(Long userId);
 }
