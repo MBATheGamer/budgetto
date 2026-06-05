@@ -1,6 +1,7 @@
 package com.mbathegamer.budgetto.dtos;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -21,5 +22,8 @@ public record SharedBudgetResponse(
     LocalDate startDate,
 
     @JsonProperty("end-date")
-    LocalDate endDate
+    LocalDate endDate,
+
+    @JsonProperty("members")
+    List<SharedBudgetMemberResponse> members
 ) {}

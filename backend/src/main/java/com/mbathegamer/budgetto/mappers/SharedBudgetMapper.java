@@ -14,13 +14,19 @@ import com.mbathegamer.budgetto.entities.User;
 @Component
 public class SharedBudgetMapper {
   public SharedBudgetResponse toDto(SharedBudget sharedBudget) {
+    var mapper = new SharedBudgetMemberMapper();
+
     return new SharedBudgetResponse(
         sharedBudget.getId(),
         sharedBudget.getName(),
         sharedBudget.getAmountLimit().doubleValue(),
         sharedBudget.getPeriodType().name().toLowerCase(),
         sharedBudget.getStartDate(),
-        sharedBudget.getEndDate()
+        sharedBudget.getEndDate(),
+        sharedBudget.getMembers()
+            .stream()
+            .map((member) -> mapper.toDto(member))
+            .toList()
     );
   }
 
