@@ -1,21 +1,17 @@
 package com.mbathegamer.budgetto.entities;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,37 +25,29 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "shared_budgets")
-public class SharedBudget {
+@Table(name = "shared_budget_members")
+public class SharedBudgetMember {
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne()
-  @JoinColumn(name = "created_by")
-  private User createdBy;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "shared_budget_id")
+  private SharedBudget sharedBudget;
 
-  @Column(name = "name")
-  private String name;
+  @JoinColumn(name = "user_id")
+  @ManyToOne(fetch = FetchType.LAZY)
+  private User user;
 
-  @Column(name = "amount_limit")
-  private BigDecimal amountLimit;
-
-  @Column(name = "period_type")
+  @Column(name = "role")
   @Enumerated(EnumType.STRING)
-  private SharedBudgetPeriodType periodType;
+  private SharedBudgetMemberRole role;
 
-  @Column(name = "start_date")
-  private LocalDate startDate;
+  @Column(name = "status")
+  @Enumerated(EnumType.STRING)
+  private SharedBudgetMemberStatus status;
 
-  @Column(name = "end_date")
-  private LocalDate endDate;
-
-  @Column(name = "created_at")
-  private LocalDateTime createdAt;
-
-  @Builder.Default
-  @OneToMany(mappedBy = "sharedBudget")
-  private List<SharedBudgetMember> members = new ArrayList<>();
+  @Column(name = "joined_at")
+  private LocalDateTime joinedAt;
 }
