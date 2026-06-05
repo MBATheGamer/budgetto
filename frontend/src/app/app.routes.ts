@@ -8,6 +8,7 @@ import { Main } from "./main";
 import { Categories } from "./main/categories";
 import { Dashboard } from "./main/dashboard";
 import { Budgets } from "./main/budgets";
+import { SharedBudgets } from "./main/shared-budgets";
 
 export const routes: Routes = [
   {
@@ -41,6 +42,10 @@ export const routes: Routes = [
       {
         path: "budgets",
         component: Budgets,
+      },
+      {
+        path: "shared-budgets",
+        component: SharedBudgets,
       },
     ],
   },
