@@ -37,7 +37,7 @@ public class SharedBudgetService {
   }
 
   public List<SharedBudget> findByUserId(Long userId) {
-    return sharedBudgetRepository.findByUserId(userId);
+    return sharedBudgetRepository.findByCreatedById(userId);
   }
 
   public Optional<SharedBudget> findById(Long id, Long userId) {
