@@ -1,5 +1,6 @@
 package com.mbathegamer.budgetto.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.mbathegamer.budgetto.dtos.SharedBudgetRequest;
 import com.mbathegamer.budgetto.dtos.SharedBudgetResponse;
+import com.mbathegamer.budgetto.entities.SharedBudgetMember;
+import com.mbathegamer.budgetto.entities.SharedBudgetMemberRole;
+import com.mbathegamer.budgetto.entities.SharedBudgetMemberStatus;
 import com.mbathegamer.budgetto.mappers.SharedBudgetMapper;
 import com.mbathegamer.budgetto.services.JwtService;
+import com.mbathegamer.budgetto.services.SharedBudgetMemberService;
 import com.mbathegamer.budgetto.services.SharedBudgetService;
 
 import jakarta.validation.Valid;
@@ -28,6 +33,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/shared-budgets")
 public class SharedBudgetController {
   private final SharedBudgetService service;
+  private final SharedBudgetMemberService sharedBudgetMemberService;
   private final SharedBudgetMapper mapper;
   private final JwtService jwtService;
 
@@ -39,19 +45,48 @@ public class SharedBudgetController {
       @RequestHeader("Authorization")
       String authorizationHeader,
       UriComponentsBuilder uriBuilder) throws Exception {
-    var response = service.create(getUserId(authorizationHeader), request)
+    var userId = getUserId(authorizationHeader);
+    var response = service.create(userId, request)
         .orElseThrow(() -> new Exception("Can't create category"));
 
-    var budgetResponse = mapper.toDto(response);
+    var sharedBudgetMember = sharedBudgetMemberService
+        .create(userId, response, SharedBudgetMemberRole.OWNER, SharedBudgetMemberStatus.ACTIVE)
+        .orElse(null);
+
+    if (sharedBudgetMember == null) {
+      throw new Exception("Invalid owner");
+    }
+
+    var sharedBudgetMembers = new ArrayList<SharedBudgetMember>();
+    sharedBudgetMembers.add(sharedBudgetMember);
+
+    var owner = sharedBudgetMember.getUser().getEmail();
+
+    var emails = request.memberMails().split(",");
+
+    for (var email : emails) {
+      if (!owner.equals(email)) {
+        sharedBudgetMember = sharedBudgetMemberService.create(
+            email.trim(), response, SharedBudgetMemberRole.MEMBER, SharedBudgetMemberStatus.PENDING
+        ).orElse(null);
+
+        if (sharedBudgetMember != null) {
+          sharedBudgetMembers.add(sharedBudgetMember);
+        }
+      }
+    }
+
+    response.setMembers(sharedBudgetMembers);
+    var sharedBudgetResponse = mapper.toDto(response);
 
     var uri = uriBuilder
-        .path("/budgets/{id}")
-        .buildAndExpand(budgetResponse.id())
+        .path("/shared-budgets/{id}")
+        .buildAndExpand(sharedBudgetResponse.id())
         .toUri();
 
     return ResponseEntity
         .created(uri)
-        .body(budgetResponse);
+        .body(sharedBudgetResponse);
   }
 
   @GetMapping()
@@ -60,9 +95,9 @@ public class SharedBudgetController {
       String authorizationHeader) {
     var response = service.findByUserId(getUserId(authorizationHeader));
 
-    var budgets = response.stream().map(mapper::toDto).toList();
+    var sharedBudgets = response.stream().map(mapper::toDto).toList();
 
-    return ResponseEntity.ok(budgets);
+    return ResponseEntity.ok(sharedBudgets);
   }
 
   @GetMapping("/{id}")
@@ -71,13 +106,13 @@ public class SharedBudgetController {
       Long id,
       @RequestHeader("Authorization")
       String authorizationHeader) {
-    var budget = service.findById(id, getUserId(authorizationHeader)).orElse(null);
+    var sharedBudget = service.findById(id, getUserId(authorizationHeader)).orElse(null);
 
-    if (budget == null) {
+    if (sharedBudget == null) {
       return ResponseEntity.notFound().build();
     }
 
-    return ResponseEntity.ok(mapper.toDto(budget));
+    return ResponseEntity.ok(mapper.toDto(sharedBudget));
   }
 
   @PutMapping("/{id}")
@@ -88,13 +123,39 @@ public class SharedBudgetController {
       SharedBudgetRequest request,
       @RequestHeader("Authorization")
       String authorizationHeader) {
-    var budget = service.update(id, getUserId(authorizationHeader), request).orElse(null);
+    var sharedBudget = service.update(id, getUserId(authorizationHeader), request).orElse(null);
 
-    if (budget == null) {
+    if (sharedBudget == null) {
       return ResponseEntity.notFound().build();
     }
 
-    return ResponseEntity.ok(mapper.toDto(budget));
+    return ResponseEntity.ok(mapper.toDto(sharedBudget));
+  }
+
+  @PostMapping("/{id}/members")
+  public ResponseEntity<SharedBudgetResponse> addMember(
+      @PathVariable
+      Long id,
+      @RequestBody
+      String email,
+      @RequestHeader("Authorization")
+      String authorizationHeader) {
+    var sharedBudget = service.findById(id, getUserId(authorizationHeader)).orElse(null);
+    if (sharedBudget == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    var sharedBudgetMember = sharedBudgetMemberService.create(
+        email, sharedBudget, SharedBudgetMemberRole.MEMBER, SharedBudgetMemberStatus.PENDING
+    ).orElse(null);
+
+    if (sharedBudgetMember == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    sharedBudget.getMembers().add(sharedBudgetMember);
+
+    return ResponseEntity.ok(mapper.toDto(sharedBudget));
   }
 
   @DeleteMapping("/{id}")
@@ -104,6 +165,17 @@ public class SharedBudgetController {
       @RequestHeader("Authorization")
       String authorizationHeader) {
     service.delete(id, getUserId(authorizationHeader));
+  }
+
+  @DeleteMapping("/{id}/members/{members-id}")
+  public void removeMember(
+      @PathVariable
+      Long id,
+      @PathVariable("member-id")
+      Long memberId,
+      @RequestHeader("Authorization")
+      String authorizationHeader) {
+    sharedBudgetMemberService.delete(id, getUserId(authorizationHeader));
   }
 
   private Long getUserId(String authorizationHeader) {
