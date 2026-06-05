@@ -90,9 +90,9 @@ public class SharedBudgetMemberService {
 
   public void delete(Long id, Long userId) {
     var member = sharedBudgetMemberRepository.findById(id).orElse(null);
+    var user = member.getSharedBudget().getCreatedBy();
 
-    if (member != null && member.getUser() != null && member.getUser().getId() == userId
-        && member.getRole() == SharedBudgetMemberRole.OWNER) {
+    if (member != null && user != null && user.getId() == userId) {
       sharedBudgetMemberRepository.delete(member);
     }
   }

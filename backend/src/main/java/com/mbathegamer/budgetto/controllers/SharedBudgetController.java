@@ -210,7 +210,7 @@ public class SharedBudgetController {
     service.delete(id, getUserId(authorizationHeader));
   }
 
-  @DeleteMapping("/{id}/members/{members-id}")
+  @DeleteMapping("/{id}/members/{member-id}")
   public void removeMember(
       @PathVariable
       Long id,
@@ -218,7 +218,7 @@ public class SharedBudgetController {
       Long memberId,
       @RequestHeader("Authorization")
       String authorizationHeader) {
-    sharedBudgetMemberService.delete(id, getUserId(authorizationHeader));
+    sharedBudgetMemberService.delete(memberId, getUserId(authorizationHeader));
   }
 
   private Long getUserId(String authorizationHeader) {
