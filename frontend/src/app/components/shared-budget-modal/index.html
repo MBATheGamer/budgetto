@@ -1,0 +1,123 @@
+<dialog #nativeDialog class="modal">
+  <div class="modal-box max-w-md">
+    <div class="flex justify-between items-center border-b border-base-300 pb-3 mb-4">
+      <h3 class="font-bold text-lg">
+        {{ sharedBudget().id !== null ? "✏ Edit group" : "⊕ New shared budget" }}
+      </h3>
+      <form method="dialog">
+        <button class="btn btn-ghost btn-sm btn-circle text-base">✕</button>
+      </form>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="space-y-4">
+        <div>
+          <label class="floating-label w-full">
+            <span class="text-xs font-semibold uppercase tracking-wider">Group name *</span>
+            <input
+              formControlName="name"
+              type="text"
+              placeholder="e.g. Flatshare, Family, Holiday…"
+              class="input input-bordered w-full"
+              [class.input-error]="form.get('name')?.invalid && form.get('name')?.touched"
+            />
+          </label>
+          @if (form.get("name")?.invalid && form.get("name")?.touched) {
+            <span class="text-error text-xs">Group name is required.</span>
+          }
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="floating-label">
+              <span class="text-xs font-semibold uppercase tracking-wider">Limit (€) *</span>
+              <input
+                formControlName="amountLimit"
+                type="number"
+                class="input input-bordered"
+                [class.input-error]="
+                  form.get('amountLimit')?.invalid && form.get('amountLimit')?.touched
+                "
+              />
+            </label>
+            @if (form.get("amountLimit")?.invalid && form.get("amountLimit")?.touched) {
+              <span class="text-error text-xs">Amount is required.</span>
+            }
+          </div>
+          <label class="floating-label">
+            <span class="text-xs font-semibold uppercase tracking-wider">Period type *</span>
+            <select formControlName="periodType" class="select select-bordered">
+              <option value="monthly">Monthly</option>
+              <option value="one_time">One-time</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="floating-label">
+              <span class="text-xs font-semibold uppercase tracking-wider">Start date *</span>
+              <input
+                formControlName="startDate"
+                type="date"
+                class="input input-bordered"
+                [class.input-error]="
+                  form.get('startDate')?.invalid && form.get('startDate')?.touched
+                "
+              />
+            </label>
+            @if (form.get("startDate")?.invalid && form.get("startDate")?.touched) {
+              <span class="text-error text-xs">Start date is required.</span>
+            }
+          </div>
+          <label class="floating-label">
+            <span class="text-xs font-semibold uppercase tracking-wider">End date (optional)</span>
+            <input formControlName="endDate" type="date" class="input input-bordered" />
+          </label>
+        </div>
+
+        <label class="floating-label w-full">
+          <span class="text-xs font-semibold uppercase tracking-wider"
+            >Invite members (emails)</span
+          >
+          <input
+            formControlName="membersMail"
+            type="text"
+            placeholder="lucas@ex.com, sara@ex.com, …"
+            class="input input-bordered w-full"
+          />
+        </label>
+
+        @if (sharedBudget().id !== null && sharedBudget().members.length > 0) {
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-2">
+              Current members
+            </p>
+            <div class="flex flex-col gap-1">
+              @for (member of sharedBudget().members; track member.id) {
+                <div
+                  class="flex items-center justify-between text-sm bg-base-200 rounded-xl px-3 py-2"
+                >
+                  <span>{{ member["first-name"] }} {{ member["last-name"] }}</span>
+                  <span class="badge badge-xs badge-ghost">{{ member.role }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="modal-action mt-4 gap-2">
+        <form method="dialog"><button class="btn btn-ghost btn-sm">Cancel</button></form>
+        <button type="submit" class="btn btn-primary btn-sm" [disabled]="submitting()">
+          @if (submitting()) {
+            <span class="loading loading-spinner loading-xs"></span>
+          } @else {
+            {{ sharedBudget().id !== null ? "Save changes" : "Create group" }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>

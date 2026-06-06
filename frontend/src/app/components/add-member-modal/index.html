@@ -1,0 +1,42 @@
+<dialog #nativeDialog class="modal">
+  <div class="modal-box max-w-sm">
+    <div class="flex justify-between items-center border-b border-base-300 pb-3 mb-4">
+      <h3 class="font-bold text-lg">＋ Add member</h3>
+      <form method="dialog">
+        <button class="btn btn-ghost btn-sm btn-circle text-base">✕</button>
+      </form>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="space-y-4">
+        <div>
+          <label class="floating-label w-full">
+            <span class="text-xs font-semibold uppercase tracking-wider">Email *</span>
+            <input
+              formControlName="email"
+              type="email"
+              placeholder="member@example.com"
+              class="input input-bordered w-full"
+              [class.input-error]="form.get('email')?.invalid && form.get('email')?.touched"
+            />
+          </label>
+          @if (form.get("email")?.invalid && form.get("email")?.touched) {
+            <span class="text-error text-xs">A valid email is required.</span>
+          }
+        </div>
+      </div>
+
+      <div class="modal-action mt-4 gap-2">
+        <form method="dialog"><button class="btn btn-ghost btn-sm">Cancel</button></form>
+        <button type="submit" class="btn btn-primary btn-sm" [disabled]="submitting()">
+          @if (submitting()) {
+            <span class="loading loading-spinner loading-xs"></span>
+          } @else {
+            Add member
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>

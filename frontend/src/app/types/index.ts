@@ -29,3 +29,31 @@ export type Budget = {
 };
 
 export type BudgetRequest = Omit<Budget, "id" | "category-name">;
+
+export type SharedBudgetMember = {
+  id: number;
+  "first-name": string;
+  "last-name": string;
+  role: string;
+  email: string;
+  status: string;
+};
+
+export type SharedBudget = {
+  id: number | null;
+  name: string;
+  "amount-limit": number;
+  "period-type": string;
+  "start-date": string;
+  "end-date": string | null;
+  members: SharedBudgetMember[];
+};
+
+export type SharedBudgetRequest = {
+  name: string;
+  "amount-limit": number;
+  "period-type": string;
+  "start-date": string;
+  "end-date": string | null;
+  "members-mail": string;
+};
