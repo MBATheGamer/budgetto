@@ -10,20 +10,23 @@
     </div>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div role="tablist" class="tabs tabs-boxed rounded-lg tabs-sm bg-base-200 mb-4 p-1">
+      <div role="tablist" class="tabs tabs-boxed rounded-lg mb-4 p-1 bg-base-200">
         <button
           type="button"
-          class="tab w-1/2"
+          class="tab w-1/2 !rounded-md"
           (click)="form.patchValue({ type: 'EXPENSE' })"
-          [class.tab-active]="form.value.type === 'EXPENSE'"
+          [class.bg-primary]="form.value.type === 'EXPENSE'"
+          [class.text-primary-content]="form.value.type === 'EXPENSE'"
         >
           Expense
         </button>
+
         <button
           type="button"
-          class="tab w-1/2"
+          class="tab w-1/2 !rounded-md"
           (click)="form.patchValue({ type: 'INCOME' })"
-          [class.tab-active]="form.value.type === 'INCOME'"
+          [class.bg-primary]="form.value.type === 'INCOME'"
+          [class.text-primary-content]="form.value.type === 'INCOME'"
         >
           Income
         </button>
