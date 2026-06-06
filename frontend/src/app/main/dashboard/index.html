@@ -23,11 +23,11 @@
     >
       <div class="stat px-4 py-3">
         <div class="stat-title text-xs">Total income</div>
-        <div class="stat-value text-success" style="font-size: 1.6rem">{{ totalIncome }} €</div>
+        <div class="stat-value text-success" style="font-size: 1.6rem">{{ totalIncome }} {{ currency() }}</div>
       </div>
       <div class="stat px-4 py-3">
         <div class="stat-title text-xs">Total expenses</div>
-        <div class="stat-value text-error" style="font-size: 1.6rem">{{ totalExpense }} €</div>
+        <div class="stat-value text-error" style="font-size: 1.6rem">{{ totalExpense }} {{ currency() }}</div>
       </div>
       <div class="stat px-4 py-3">
         <div class="stat-title text-xs">Balance</div>
@@ -37,7 +37,7 @@
           [class.text-success]="balance >= 0"
           [class.text-error]="balance < 0"
         >
-          {{ balance }} €
+          {{ balance }} {{ currency() }}
         </div>
       </div>
       <div class="stat px-4 py-3">
@@ -75,7 +75,7 @@
                 [class.text-success]="transaction.type === 'INCOME'"
                 [class.text-error]="transaction.type === 'EXPENSE'"
               >
-                {{ transaction.type === "INCOME" ? "+" : "−" }}{{ transaction.amount }} €
+                {{ transaction.type === "INCOME" ? "+" : "−" }}{{ transaction.amount }} {{ currency() }}
               </div>
             </div>
           } @empty {
@@ -97,7 +97,7 @@
             <div>
               <div class="flex justify-between text-xs mb-1">
                 <span>{{ budget["category-name"] }}</span>
-                <span>{{ budget["amount-limit"] }} €</span>
+                <span>{{ budget["amount-limit"] }} {{ currency() }}</span>
               </div>
               <progress
                 class="progress progress-primary h-1.5 w-full"

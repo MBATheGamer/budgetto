@@ -100,7 +100,7 @@
               [class.text-success]="transaction.type === 'INCOME'"
               [class.text-error]="transaction.type === 'EXPENSE'"
             >
-              {{ transaction.type === "INCOME" ? "+" : "-" }}{{ transaction.amount }} €
+              {{ transaction.type === "INCOME" ? "+" : "-" }}{{ transaction.amount }} {{ currency() }}
             </td>
             <td class="flex gap-1">
               <button

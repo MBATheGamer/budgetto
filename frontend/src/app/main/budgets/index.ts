@@ -5,6 +5,7 @@ import { DeleteModal } from "../../components/delete-modal";
 import { BudgetService } from "../../services/budget.service";
 import { ToastService } from "../../services/toast.service";
 import { Budget, BudgetRequest } from "../../types";
+import { env } from "../../../env";
 
 @Component({
   selector: "app-budgets",
@@ -15,6 +16,7 @@ export class Budgets implements OnInit {
   private readonly budgetService = inject(BudgetService);
   private readonly toastService = inject(ToastService);
 
+  public readonly currency = signal(env.currency);
   public budgets = signal<Budget[]>([]);
   public title = signal("Delete a budget");
   public content = signal("");

@@ -7,6 +7,7 @@ import { AuthService } from "../../services/auth.service";
 import { SharedBudgetService } from "../../services/shared-budget.service";
 import { ToastService } from "../../services/toast.service";
 import { SharedBudget, SharedBudgetMember } from "../../types";
+import { env } from "../../../env";
 
 @Component({
   selector: "app-shared-budgets",
@@ -21,6 +22,8 @@ export class SharedBudgets implements OnInit {
   public sharedBudgets = signal<SharedBudget[]>([]);
   public title = signal("Delete a group");
   public content = signal("");
+  public readonly currency = signal(env.currency);
+  
 
   sharedBudgetId = signal<number | null>(null);
   memberId = signal<number | null>(null);

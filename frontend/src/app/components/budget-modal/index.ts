@@ -4,6 +4,7 @@ import { BudgetService } from "../../services/budget.service";
 import { CategoryService } from "../../services/category.service";
 import { ToastService } from "../../services/toast.service";
 import { Budget, BudgetRequest, Category } from "../../types";
+import { env } from "../../../env";
 
 @Component({
   selector: "budget-modal",
@@ -15,6 +16,8 @@ export class BudgetModal implements OnInit {
   private readonly categoryService = inject(CategoryService);
   private readonly toastService = inject(ToastService);
   private readonly fb = inject(FormBuilder);
+
+  public readonly currency = signal(env.currency);
 
   saved = output<Budget>();
   submitting = signal(false);

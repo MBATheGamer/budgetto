@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { SharedBudgetService } from "../../services/shared-budget.service";
 import { ToastService } from "../../services/toast.service";
 import { SharedBudget, SharedBudgetRequest } from "../../types";
+import { env } from "../../../env";
 
 @Component({
   selector: "shared-budget-modal",
@@ -13,6 +14,8 @@ export class SharedBudgetModal {
   private readonly sharedBudgetService = inject(SharedBudgetService);
   private readonly toastService = inject(ToastService);
   private readonly fb = inject(FormBuilder);
+
+  public readonly currency = signal(env.currency);
 
   saved = output<SharedBudget>();
   submitting = signal(false);

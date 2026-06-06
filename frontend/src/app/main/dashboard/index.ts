@@ -8,6 +8,7 @@ import { BudgetService } from "../../services/budget.service";
 import { ToastService } from "../../services/toast.service";
 import { TransactionModal } from "../../components/transaction-modal";
 import { Transaction, Budget, User } from "../../types";
+import { env } from "../../../env";
 
 @Component({
   selector: "app-dashboard",
@@ -26,6 +27,7 @@ export class Dashboard implements OnInit {
   public transactions = signal<Transaction[]>([]);
   public budgets = signal<Budget[]>([]);
   public loading = signal(true);
+  public readonly currency = signal(env.currency);
 
   // computed stats
   get totalIncome(): number {

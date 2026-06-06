@@ -4,4 +4,5 @@ export const env = {
   API_VERSION: "put your api version and root path",
   ACCESS_TOKEN_NAME: "put your access token name here, this name is used in localStorage",
   USER_NAME: "put your user name here, this name is used in localStorage",
+  currency: "put your default currency here, this is used for formatting amounts",
 };
