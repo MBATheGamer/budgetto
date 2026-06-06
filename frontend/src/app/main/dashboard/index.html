@@ -1,7 +1,123 @@
-<div class="flex-1 flex items-center justify-center">
-  @if (user()) {
-    <h1 class="text-2xl font-bold">Welcome, {{ user()["first-name"] }}!</h1>
+<div id="page-dashboard" class="page">
+  <div
+    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 pb-4 border-b border-dashed border-base-300"
+  >
+    <div>
+      <h2 class="text-xl font-bold">Dashboard</h2>
+      <p class="text-base-content/50 text-sm">
+        Welcome back, {{ user()?.["first-name"] }} {{ user()?.["last-name"] }}
+      </p>
+    </div>
+    <button class="btn btn-primary btn-sm shrink-0" (click)="updateRequest(null, transactionModal)">
+      + Add transaction
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <span class="loading loading-spinner loading-md"></span>
+    </div>
   } @else {
-    <span class="loading loading-spinner loading-md"></span>
+    <div
+      class="stats stats-vertical sm:stats-horizontal shadow border border-base-300 w-full mb-4 overflow-x-auto"
+    >
+      <div class="stat px-4 py-3">
+        <div class="stat-title text-xs">Total income</div>
+        <div class="stat-value text-success" style="font-size: 1.6rem">{{ totalIncome }} €</div>
+      </div>
+      <div class="stat px-4 py-3">
+        <div class="stat-title text-xs">Total expenses</div>
+        <div class="stat-value text-error" style="font-size: 1.6rem">{{ totalExpense }} €</div>
+      </div>
+      <div class="stat px-4 py-3">
+        <div class="stat-title text-xs">Balance</div>
+        <div
+          class="stat-value"
+          style="font-size: 1.6rem"
+          [class.text-success]="balance >= 0"
+          [class.text-error]="balance < 0"
+        >
+          {{ balance }} €
+        </div>
+      </div>
+      <div class="stat px-4 py-3">
+        <div class="stat-title text-xs">Transactions</div>
+        <div class="stat-value" style="font-size: 1.6rem">{{ transactions().length }}</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div class="lg:col-span-2 card border border-base-300 shadow-sm">
+        <div
+          class="bg-base-200 border-b border-base-300 px-3 py-2 text-xs font-bold uppercase tracking-wider text-base-content/60 flex justify-between items-center"
+        >
+          Recent transactions
+          <a routerLink="/transactions" class="btn btn-ghost btn-xs">See all →</a>
+        </div>
+        <div class="divide-y divide-base-200">
+          @for (transaction of recentTransactions; track transaction.id) {
+            <div class="flex items-center gap-3 px-4 py-2.5 hover:bg-base-200/40 transition-colors">
+              <div
+                class="w-8 h-8 rounded-lg bg-base-200 border border-base-300 flex items-center justify-center shrink-0 text-base"
+              >
+                {{ transaction.type === "INCOME" ? "💰" : "💸" }}
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="font-semibold text-sm truncate">{{ transaction.description }}</div>
+                <div class="text-xs text-base-content/50">
+                  {{ transaction["transaction-date"] | date: "dd/MM" }}
+                  · {{ transaction.category }} · {{ transaction["author-first-name"] }}
+                  {{ transaction["author-last-name"] }}
+                </div>
+              </div>
+              <div
+                class="font-bold text-sm shrink-0"
+                [class.text-success]="transaction.type === 'INCOME'"
+                [class.text-error]="transaction.type === 'EXPENSE'"
+              >
+                {{ transaction.type === "INCOME" ? "+" : "−" }}{{ transaction.amount }} €
+              </div>
+            </div>
+          } @empty {
+            <div class="px-4 py-8 text-center text-base-content/40 text-sm">
+              No transactions yet.
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="card border border-base-300 shadow-sm">
+        <div
+          class="bg-base-200 border-b border-base-300 px-3 py-2 text-xs font-bold uppercase tracking-wider text-base-content/60"
+        >
+          Budget tracking
+        </div>
+        <div class="p-4 space-y-3">
+          @for (budget of budgets(); track budget.id) {
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span>{{ budget["category-name"] }}</span>
+                <span>{{ budget["amount-limit"] }} €</span>
+              </div>
+              <progress
+                class="progress progress-primary h-1.5 w-full"
+                value="0"
+                max="100"
+              ></progress>
+            </div>
+          } @empty {
+            <p class="text-xs text-base-content/40 text-center py-4">No budgets set.</p>
+          }
+          <a
+            routerLink="main/budgets"
+            class="btn btn-ghost btn-xs w-full mt-2 border border-base-300"
+          >
+            Manage budgets →
+          </a>
+        </div>
+      </div>
+    </div>
   }
 </div>
+
+<transaction-modal #transactionModal (saved)="onTransactionSaved($event)" />
