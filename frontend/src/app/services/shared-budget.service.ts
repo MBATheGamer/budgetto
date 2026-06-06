@@ -50,7 +50,7 @@ export class SharedBudgetService {
   }
 
   public updateMemberStatus(id: number, memberId: number, status: string): Observable<void> {
-    return this.http.post<void>(
+    return this.http.put<void>(
       `${env["BASE_URL"]}${env["API_VERSION"]}/shared-budgets/${id}/members/${memberId}`,
       {
         status,
