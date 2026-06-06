@@ -97,7 +97,7 @@ export class SharedBudgets implements OnInit {
     const member = this.getMyMember(budget);
     if (!member || !budget.id) return;
 
-    this.sharedBudgetService.updateMemberStatus(budget.id, member.id, "REJECTED").subscribe({
+    this.sharedBudgetService.updateMemberStatus(budget.id, member.id, "PENDING").subscribe({
       next: () => {
         this.toastService.show("Invitation rejected", "success");
         this.sharedBudgets.update((list) => list.filter((b) => b.id !== budget.id));
