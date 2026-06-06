@@ -94,7 +94,7 @@
             }
           </div>
 
-          <p class="text-xs text-base-content/40">Limit: {{ budget["amount-limit"] }} €</p>
+          <p class="text-xs text-base-content/40">Limit: {{ budget["amount-limit"] }} {{ currency() }}</p>
 
           @if (isPendingForMe(budget)) {
             <div class="flex flex-col gap-2 pt-1 border-t border-warning/20">

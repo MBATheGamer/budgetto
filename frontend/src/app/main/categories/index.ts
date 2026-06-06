@@ -5,6 +5,7 @@ import { DeleteModal } from "../../components/delete-modal";
 import { CategoryService } from "../../services/category.service";
 import { ToastService } from "../../services/toast.service";
 import { Category } from "../../types";
+import { env } from "../../../env";
 
 @Component({
   selector: "app-categories",
@@ -20,6 +21,7 @@ export class Categories implements OnInit {
   public customCategories = signal(0);
   public title = signal("Delete a category");
   public content = signal("");
+  public readonly currency = signal(env.currency);
 
   categoryId: number | null = null;
 

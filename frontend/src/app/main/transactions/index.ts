@@ -6,6 +6,7 @@ import { TransactionModal } from "../../components/transaction-modal";
 import { ToastService } from "../../services/toast.service";
 import { TransactionService } from "../../services/transaction.service";
 import { Transaction } from "../../types";
+import { env } from "../../../env";
 
 @Component({
   selector: "app-transactions",
@@ -21,6 +22,7 @@ export class Transactions implements OnInit {
   public searchQuery = signal("");
   public title = signal("Delete a transaction");
   public content = signal("");
+  public readonly currency = signal(env.currency);
 
   transactionId: number | null = null;
 

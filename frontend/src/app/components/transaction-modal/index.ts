@@ -5,6 +5,7 @@ import { SharedBudgetService } from "../../services/shared-budget.service";
 import { ToastService } from "../../services/toast.service";
 import { TransactionService } from "../../services/transaction.service";
 import { Category, SharedBudget, Transaction, TransactionRequest } from "../../types";
+import { env } from "../../../env";
 
 @Component({
   selector: "transaction-modal",
@@ -17,6 +18,8 @@ export class TransactionModal implements OnInit {
   private readonly sharedBudgetService = inject(SharedBudgetService);
   private readonly toastService = inject(ToastService);
   private readonly fb = inject(FormBuilder);
+
+  public readonly currency = signal(env.currency);
 
   saved = output<Transaction>();
   submitting = signal(false);
