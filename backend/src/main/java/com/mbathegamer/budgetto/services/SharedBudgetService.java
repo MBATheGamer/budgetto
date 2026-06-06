@@ -31,9 +31,7 @@ public class SharedBudgetService {
 
     var sharedBudget = mapper.toEntity(request, user);
 
-    sharedBudgetRepository.save(sharedBudget);
-
-    return Optional.of(sharedBudget);
+    return Optional.of(sharedBudgetRepository.save(sharedBudget));
   }
 
   public List<SharedBudget> findByUserId(Long userId) {
