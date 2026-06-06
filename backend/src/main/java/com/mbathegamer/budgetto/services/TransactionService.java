@@ -38,8 +38,9 @@ public class TransactionService {
       return Optional.empty();
     }
 
-    var sharedBudget = sharedBudgetRepository.findById(request.sharedBudgetId())
-        .orElse(null);
+    var sharedBudget = request.sharedBudgetId() != null
+        ? sharedBudgetRepository.findById(request.sharedBudgetId()).orElse(null)
+        : null;
 
     var transaction = mapper.toEntity(request, user, category, sharedBudget);
 
