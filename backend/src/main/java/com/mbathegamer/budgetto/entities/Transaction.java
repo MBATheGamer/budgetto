@@ -62,6 +62,6 @@ public class Transaction {
   @Column(name = "comment", columnDefinition = "TEXT")
   private String comment;
 
-  @Column(name = "create_at")
+  @Column(name = "created_at")
   private LocalDateTime createAt;
 }
