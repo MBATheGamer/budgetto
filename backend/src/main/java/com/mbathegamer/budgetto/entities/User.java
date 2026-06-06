@@ -1,6 +1,7 @@
 package com.mbathegamer.budgetto.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -76,6 +77,18 @@ public class User implements UserDetails {
   @Builder.Default
   @OneToMany(mappedBy = "user")
   private Set<Category> categories = new HashSet<>();
+
+  @Builder.Default
+  @OneToMany(mappedBy = "user")
+  private Set<Budget> budgets = new HashSet<>();
+
+  @Builder.Default
+  @OneToMany(mappedBy = "createdBy")
+  private Set<SharedBudget> sharedBudget = new HashSet<>();
+
+  @Builder.Default
+  @OneToMany(mappedBy = "user")
+  private List<SharedBudgetMember> memberships = new ArrayList<>();
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

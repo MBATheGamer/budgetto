@@ -1,17 +1,21 @@
 package com.mbathegamer.budgetto.entities;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,30 +29,37 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "categories")
-public class Category {
+@Table(name = "shared_budgets")
+public class SharedBudget {
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @JoinColumn(name = "user_id")
-  @ManyToOne(fetch = FetchType.LAZY)
-  private User user;
+  @ManyToOne()
+  @JoinColumn(name = "created_by")
+  private User createdBy;
 
   @Column(name = "name")
   private String name;
 
-  @Column(name = "icon")
-  private String icon;
+  @Column(name = "amount_limit")
+  private BigDecimal amountLimit;
 
-  @Column(name = "type")
+  @Column(name = "period_type")
   @Enumerated(EnumType.STRING)
-  private CategoryType type;
+  private SharedBudgetPeriodType periodType;
 
-  @Column(name = "is_default")
-  private boolean isDefault;
+  @Column(name = "start_date")
+  private LocalDate startDate;
+
+  @Column(name = "end_date")
+  private LocalDate endDate;
 
   @Column(name = "created_at")
   private LocalDateTime createdAt;
+
+  @Builder.Default
+  @OneToMany(mappedBy = "sharedBudget")
+  private List<SharedBudgetMember> members = new ArrayList<>();
 }

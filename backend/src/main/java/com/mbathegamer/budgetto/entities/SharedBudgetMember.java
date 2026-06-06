@@ -25,30 +25,29 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "categories")
-public class Category {
+@Table(name = "shared_budget_members")
+public class SharedBudgetMember {
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "shared_budget_id")
+  private SharedBudget sharedBudget;
+
   @JoinColumn(name = "user_id")
   @ManyToOne(fetch = FetchType.LAZY)
   private User user;
 
-  @Column(name = "name")
-  private String name;
-
-  @Column(name = "icon")
-  private String icon;
-
-  @Column(name = "type")
+  @Column(name = "role")
   @Enumerated(EnumType.STRING)
-  private CategoryType type;
+  private SharedBudgetMemberRole role;
 
-  @Column(name = "is_default")
-  private boolean isDefault;
+  @Column(name = "status")
+  @Enumerated(EnumType.STRING)
+  private SharedBudgetMemberStatus status;
 
-  @Column(name = "created_at")
-  private LocalDateTime createdAt;
+  @Column(name = "joined_at")
+  private LocalDateTime joinedAt;
 }
