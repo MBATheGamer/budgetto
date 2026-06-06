@@ -57,3 +57,24 @@ export type SharedBudgetRequest = {
   "end-date": string | null;
   "members-mail": string;
 };
+
+export type Transaction = {
+  id: number | null;
+  "transaction-date": string;
+  description: string;
+  category: string;
+  "author-first-name": string;
+  "author-last-name": string;
+  type: string;
+  amount: number;
+};
+
+export type TransactionRequest = {
+  type: string;
+  description: string;
+  amount: number;
+  "transaction-date": string;
+  "category-id": number | null;
+  "shared-budget-id": number | null;
+  comment: string;
+};

@@ -1,0 +1,145 @@
+<div id="page-transactions" class="page">
+  <div
+    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 pb-4 border-b border-dashed border-base-300"
+  >
+    <div>
+      <h2 class="text-xl font-bold">Transactions</h2>
+      <p class="text-base-content/50 text-sm">History of all your operations</p>
+    </div>
+    <button class="btn btn-primary btn-sm shrink-0" (click)="updateRequest(null, transactionModal)">
+      + New transaction
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap gap-2 mb-4 items-center">
+    <div class="tabs tabs-boxed tabs-sm bg-base-200">
+      <button
+        (click)="expenseFilter.set('all')"
+        class="tab text-xs"
+        [class.tab-active]="expenseFilter() === 'all'"
+      >
+        All
+      </button>
+      <button
+        (click)="expenseFilter.set('income')"
+        class="tab text-xs"
+        [class.tab-active]="expenseFilter() === 'income'"
+      >
+        Income
+      </button>
+      <button
+        (click)="expenseFilter.set('expense')"
+        class="tab text-xs"
+        [class.tab-active]="expenseFilter() === 'expense'"
+      >
+        Expense
+      </button>
+    </div>
+
+    <label class="input input-bordered input-sm flex items-center gap-2 flex-1 min-w-40">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 16 16"
+        fill="currentColor"
+        class="h-4 w-4 opacity-50"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+          clip-rule="evenodd"
+        />
+      </svg>
+      <input
+        type="text"
+        class="grow text-sm"
+        placeholder="Search…"
+        (input)="searchQuery.set($any($event.target).value)"
+      />
+    </label>
+  </div>
+
+  <!-- Table -->
+  <div class="card border border-base-300 shadow-sm overflow-x-auto mb-4">
+    <table class="table table-zebra table-sm w-full min-w-max">
+      <thead>
+        <tr class="bg-base-200 text-xs uppercase tracking-wider">
+          <th>Date</th>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Author</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody class="text-sm">
+        @for (transaction of getFiltered(); track transaction.id) {
+          <tr>
+            <td class="text-xs text-base-content/60">
+              {{ transaction["transaction-date"] | date: "dd/MM/yyyy" }}
+            </td>
+            <td class="font-medium">{{ transaction.description }}</td>
+            <td>
+              <span class="badge badge-sm badge-ghost">{{ transaction.category }}</span>
+            </td>
+            <td class="text-xs text-base-content/60">
+              {{ transaction["author-first-name"] }} {{ transaction["author-last-name"] }}
+            </td>
+            <td>
+              <span
+                class="badge badge-sm badge-outline"
+                [class.badge-success]="transaction.type === 'INCOME'"
+                [class.badge-error]="transaction.type === 'EXPENSE'"
+              >
+                {{ transaction.type.toLowerCase() }}
+              </span>
+            </td>
+            <td
+              class="font-bold"
+              [class.text-success]="transaction.type === 'INCOME'"
+              [class.text-error]="transaction.type === 'EXPENSE'"
+            >
+              {{ transaction.type === "INCOME" ? "+" : "-" }}{{ transaction.amount }} €
+            </td>
+            <td class="flex gap-1">
+              <button
+                class="btn btn-ghost btn-xs"
+                (click)="updateRequest(transaction, transactionModal)"
+              >
+                ✏
+              </button>
+              <button
+                class="btn btn-error btn-xs btn-outline"
+                (click)="deleteRequest(transaction, confirmModal)"
+              >
+                ✕
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="7" class="text-center p-8 bg-base-200 text-base-content/50">
+              No transactions found.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex justify-between items-center">
+    <span class="text-xs text-base-content/50">
+      Showing {{ getFiltered().length }} of {{ transactions().length }} transactions
+    </span>
+  </div>
+</div>
+
+<transaction-modal #transactionModal (saved)="onSaved($event)" />
+
+<delete-modal
+  [title]="title()"
+  [content]="content()"
+  (confirmDelete)="confirmDelete()"
+  #confirmModal
+/>
