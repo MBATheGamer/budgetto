@@ -14,6 +14,7 @@ import com.mbathegamer.budgetto.mappers.SharedBudgetMemberMapper;
 import com.mbathegamer.budgetto.repositories.SharedBudgetMemberRepository;
 import com.mbathegamer.budgetto.repositories.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -63,7 +64,7 @@ public class SharedBudgetMemberService {
   public Optional<SharedBudgetMember> findById(Long id, Long userId) {
     var member = sharedBudgetMemberRepository.findById(id).orElse(null);
 
-    if (member == null || (member.getUser() != null && member.getUser().getId() != userId)) {
+    if (member == null || member.getUser() == null || member.getUser().getId() != userId) {
       return Optional.empty();
     }
 
@@ -75,6 +76,7 @@ public class SharedBudgetMemberService {
     return sharedBudgetMemberRepository.findBySharedBudgetIdAndUserId(id, sharedBudgetId, userId);
   }
 
+  @Transactional
   public Optional<SharedBudgetMember> update(Long id, Long userId,
       SharedBudgetMemberStatus status) {
     var member = sharedBudgetMemberRepository.findById(id).orElse(null);
@@ -92,7 +94,8 @@ public class SharedBudgetMemberService {
     var member = sharedBudgetMemberRepository.findById(id).orElse(null);
     var user = member.getSharedBudget().getCreatedBy();
 
-    if (member != null && user != null && user.getId() == userId) {
+    if (member != null
+        && ((user != null && user.getId() == userId) || member.getUser().getId() == userId)) {
       sharedBudgetMemberRepository.delete(member);
     }
   }
