@@ -1,0 +1,150 @@
+<div id="page-shared" class="page">
+  <div
+    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 pb-4 border-b border-dashed border-base-300"
+  >
+    <div>
+      <h2 class="text-xl font-bold">Shared Budgets</h2>
+      <p class="text-base-content/50 text-sm">Manage your finances as a group</p>
+    </div>
+    <button
+      class="btn btn-primary btn-sm shrink-0"
+      (click)="updateRequest(null, sharedBudgetModal)"
+    >
+      + Create a group
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    @for (budget of sharedBudgets(); track budget.id) {
+      <div
+        class="card border border-base-300 shadow-sm bg-base-100"
+        [class.border-warning/50]="isPendingForMe(budget)"
+        [class.bg-warning/5]="isPendingForMe(budget)"
+      >
+        <div class="card-body p-4 gap-3">
+          <div class="flex justify-between items-start gap-2">
+            <h3 class="font-bold text-sm leading-tight">{{ budget.name }}</h3>
+            <span class="badge badge-sm badge-ghost shrink-0">
+              {{ budget["period-type"] === "monthly" ? "Monthly" : "One-time" }}
+            </span>
+          </div>
+
+          <p class="text-xs text-base-content/50">
+            {{ budget.members.length }} member{{ budget.members.length !== 1 ? "s" : "" }}
+            @if (budget["start-date"]) {
+              · From {{ budget["start-date"] }}
+            }
+            @if (budget["end-date"]) {
+              → {{ budget["end-date"] }}
+            }
+          </p>
+
+          <div class="flex gap-1 flex-wrap items-center">
+            @for (member of budget.members; track member.id) {
+              <div
+                class="relative group/member"
+                [title]="
+                  member['first-name'] +
+                  ' ' +
+                  member['last-name'] +
+                  (member.status === 'PENDING' ? ' (pending)' : '')
+                "
+              >
+                <div class="avatar avatar-placeholder">
+                  <div
+                    class="rounded-full w-7 text-xs font-bold transition-opacity"
+                    [class.bg-primary]="member.role === 'OWNER'"
+                    [class.text-primary-content]="member.role === 'OWNER'"
+                    [class.bg-base-300]="member.role !== 'OWNER'"
+                    [class.text-base-content]="member.role !== 'OWNER'"
+                    [class.opacity-50]="member.status === 'PENDING'"
+                  >
+                    {{ member["first-name"][0] }}{{ member["last-name"][0] }}
+                  </div>
+                </div>
+                @if (member.status === "PENDING") {
+                  <span
+                    class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-warning border border-base-100"
+                  ></span>
+                }
+                @if (isOwner(budget) && member.role !== "OWNER") {
+                  <button
+                    class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-error text-error-content flex items-center justify-center opacity-0 group-hover/member:opacity-100 transition-opacity text-xs leading-none"
+                    (click)="removeMemberRequest(budget, member, confirmModal)"
+                    title="Remove member"
+                  >
+                    ✕
+                  </button>
+                }
+              </div>
+            }
+
+            @if (isOwner(budget)) {
+              <button
+                class="avatar avatar-placeholder"
+                (click)="addMemberRequest(budget, addMemberModal)"
+                title="Add member"
+              >
+                <div
+                  class="rounded-full w-7 text-xs font-bold bg-base-200 text-base-content/50 border border-dashed border-base-300 hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors"
+                >
+                  ＋
+                </div>
+              </button>
+            }
+          </div>
+
+          <p class="text-xs text-base-content/40">Limit: {{ budget["amount-limit"] }} €</p>
+
+          @if (isPendingForMe(budget)) {
+            <div class="flex flex-col gap-2 pt-1 border-t border-warning/20">
+              <p class="text-xs text-warning font-medium">You have a pending invitation</p>
+              <div class="flex gap-2">
+                <button class="btn btn-success btn-xs flex-1" (click)="acceptInvitation(budget)">
+                  ✓ Accept
+                </button>
+                <button
+                  class="btn btn-error btn-xs btn-outline flex-1"
+                  (click)="rejectInvitation(budget)"
+                >
+                  ✕ Reject
+                </button>
+              </div>
+            </div>
+          } @else {
+            <div class="flex gap-2">
+              <button
+                class="btn btn-ghost btn-xs flex-1 border border-base-300"
+                (click)="updateRequest(budget, sharedBudgetModal)"
+              >
+                ✏ Edit
+              </button>
+              @if (isOwner(budget)) {
+                <button
+                  class="btn btn-error btn-xs btn-outline flex-1"
+                  (click)="deleteRequest(budget, confirmModal)"
+                >
+                  ✕ Delete
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    } @empty {
+      <div class="col-span-3 text-center p-12 text-base-content/40">
+        <p class="text-sm">No shared budgets yet.</p>
+      </div>
+    }
+  </div>
+</div>
+
+<shared-budget-modal #sharedBudgetModal (saved)="onSaved($event)" />
+<add-member-modal #addMemberModal (saved)="onSaved($event)" />
+
+<delete-modal
+  [title]="title()"
+  [content]="content()"
+  (confirmDelete)="memberId() ? confirmRemoveMember() : confirmDelete()"
+  #confirmModal
+/>
